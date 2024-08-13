@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.beamable": "1.19.22",
+    "com.beamable.server": "1.19.22",
+    "com.unity.collab-proxy": "2.4.4",
+    "com.unity.feature.development": "1.0.1",
+    "com.unity.textmeshpro": "3.0.6",
+    "com.unity.timeline": "1.7.4",
+    "com.unity.ugui": "1.0.0",
+    "com.unity.visualscripting": "1.8.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -31,5 +39,14 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "Beamable",
+      "url": "https://nexus.beamable.com/nexus/content/repositories/unity",
+      "scopes": [
+        "com.beamable"
+      ]
+    }
+  ]
 }
