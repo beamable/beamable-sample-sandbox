@@ -16,7 +16,13 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 470107488855b184b9e1d132ab7b4126
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: c7168e4585ec7ca479ba2d3423442bc1
+    m_Address: Assets/Sprites/coin.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - currency_icon
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 38cadcc6e7353d248a35fbebde39e5f6, type: 2}
   m_SchemaSet:
