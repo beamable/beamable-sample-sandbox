@@ -8,6 +8,10 @@ namespace Beamable.Microservices
     [Microservice("Service")]
     public class Service : Microservice
     {
-        
+        [ClientCallable]
+        public async void GetCurrent()
+        {
+            // var result = await Services.P
+        }
     }
 }
