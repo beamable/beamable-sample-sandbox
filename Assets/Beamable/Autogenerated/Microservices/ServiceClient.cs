@@ -32,15 +32,15 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the CreateGroupWithSpaces method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.CreateGroupWithSpaces"/>
+        /// Call the ResetStats method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.ResetStats"/>
         /// </summary>
-        public Beamable.Common.Promise<string> CreateGroupWithSpaces(string groupName)
+        public Beamable.Common.Promise<System.Threading.Tasks.Task> ResetStats(string statKey)
         {
-            object raw_groupName = groupName;
+            object raw_statKey = statKey;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("groupName", raw_groupName);
-            return this.Request<string>("Service", "CreateGroupWithSpaces", serializedFields);
+            serializedFields.Add("statKey", raw_statKey);
+            return this.Request<System.Threading.Tasks.Task>("Service", "ResetStats", serializedFields);
         }
     }
     
