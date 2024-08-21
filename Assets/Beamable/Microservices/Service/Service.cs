@@ -22,6 +22,5 @@ namespace Beamable.Microservices
 
             await Services.Stats.SetStats(access, resetStats);
         }
-        
     }
 }
