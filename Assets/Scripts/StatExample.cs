@@ -6,37 +6,38 @@ using Beamable.Server.Clients;
 
 public class StatExample : MonoBehaviour
 {
-    void Start()
+    private ServiceClient _service;
+
+    //  Unity Methods  --------------------------------
+    protected void Start()
     {
-        if (ShouldTrackMetrics())
-        {
-            // Your tracking logic here
-            TrackInstall();
-            TrackDAU();
-        }
-        else
-        {
-            Debug.Log("Metrics tracking skipped for this platform.");
-        }
+        _service = new ServiceClient();
+
+        SetupBeamable();
     }
 
-    private bool ShouldTrackMetrics()
+    private async void SetupBeamable()
     {
-        // Exclude specific platforms
-        return !(Application.platform == RuntimePlatform.WindowsEditor ||
-                 Application.platform == RuntimePlatform.LinuxServer ||
-                 Application.platform == RuntimePlatform.OSXEditor);
-    }
+        var context = BeamContext.Default;
+        await context.OnReady;
 
-    private void TrackInstall()
-    {
-        // Logic to track install
-        Debug.Log("Install tracked.");
-    }
+        Debug.Log($"context.PlayerId = {context.PlayerId}");
 
-    private void TrackDAU()
-    {
-        // Logic to track DAU
-        Debug.Log("DAU tracked.");
+        string statKey = "MyExampleStat";
+        string access = "public";
+        string domain = "client";
+        string type = "player";
+        long id = context.PlayerId;
+
+        await _service.ResetStats(statKey);
+
+        // Get Value
+        Dictionary<string, string> getStats =
+            await context.Api.StatsService.GetStats(domain, access, type, id);
+
+        string myExampleStatValue = "";
+        getStats.TryGetValue(statKey, out myExampleStatValue);
+
+        Debug.Log($"myExampleStatValue = {myExampleStatValue}");
     }
 }
