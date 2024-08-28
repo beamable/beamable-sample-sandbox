@@ -12,7 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a96b3852b93843ef94fc3401214399e, type: 3}
   m_Name: MicroserviceConfiguration
   m_EditorClassIdentifier: 
-  Microservices: []
+  Microservices:
+  - ServiceName: Service
+    Enabled: 1
+    Archived: 1
+    TemplateId: small
+    CustomDockerFileStrings: 
+    IncludeDebugTools: 0
+    DebugData:
+      Username: root
+      Password: Password!
+      SshPort: 11100
+    LastBuiltCheckSum: 
+    RobotId: 
   StorageObjects: []
   ServiceCodeHandlesOnLastDomainReload: []
   LastBuiltDockerImagesCodeHandles: []
