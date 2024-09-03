@@ -14,7 +14,7 @@ namespace Beamable.Server.Clients
     using Beamable.Server;
     
     
-    /// <summary> A generated client for <see cref="Beamable.Microservices.Service"/> </summary
+    /// <summary> A generated client for <see cref="Beamable.Microservices.Service.Service"/> </summary
     public sealed class ServiceClient : MicroserviceClient, Beamable.Common.IHaveServiceName
     {
         
@@ -32,15 +32,27 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the CreateGroupWithSpaces method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.CreateGroupWithSpaces"/>
+        /// Call the SendEmail method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.Service.SendEmail"/>
         /// </summary>
-        public Beamable.Common.Promise<string> CreateGroupWithSpaces(string groupName)
+        public Beamable.Common.Promise<System.Threading.Tasks.Task> SendEmail(long userId)
         {
-            object raw_groupName = groupName;
+            object raw_userId = userId;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("groupName", raw_groupName);
-            return this.Request<string>("Service", "CreateGroupWithSpaces", serializedFields);
+            serializedFields.Add("userId", raw_userId);
+            return this.Request<System.Threading.Tasks.Task>("Service", "SendEmail", serializedFields);
+        }
+        
+        /// <summary>
+        /// Call the CollectAllMailAndReturnRewards method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.Service.CollectAllMailAndReturnRewards"/>
+        /// </summary>
+        public Beamable.Common.Promise<System.Collections.Generic.List<string>> CollectAllMailAndReturnRewards(long userId)
+        {
+            object raw_userId = userId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("userId", raw_userId);
+            return this.Request<System.Collections.Generic.List<string>>("Service", "CollectAllMailAndReturnRewards", serializedFields);
         }
     }
     
@@ -48,7 +60,7 @@ namespace Beamable.Server.Clients
     {
         
         [System.SerializableAttribute()]
-        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
+        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
         {
         }
     }
