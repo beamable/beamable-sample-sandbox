@@ -8,36 +8,26 @@ public class StatExample : MonoBehaviour
 {
     private ServiceClient _service;
 
-    //  Unity Methods  --------------------------------
-    protected void Start()
+    // Unity Methods  --------------------------------
+    void Start()
     {
-        _service = new ServiceClient();
-
-        SetupBeamable();
+        // Your tracking logic here
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            TrackInstall();
+            TrackDAU();
+        }
     }
 
-    private async void SetupBeamable()
+    private void TrackInstall()
     {
-        var context = BeamContext.Default;
-        await context.OnReady;
+        // Logic to track install
+        Debug.Log("Install tracked.");
+    }
 
-        Debug.Log($"context.PlayerId = {context.PlayerId}");
-
-        string statKey = "MyExampleStat";
-        string access = "public";
-        string domain = "client";
-        string type = "player";
-        long id = context.PlayerId;
-
-        await _service.ResetStats(statKey);
-
-        // Get Value
-        Dictionary<string, string> getStats =
-            await context.Api.StatsService.GetStats(domain, access, type, id);
-
-        string myExampleStatValue = "";
-        getStats.TryGetValue(statKey, out myExampleStatValue);
-
-        Debug.Log($"myExampleStatValue = {myExampleStatValue}");
+    private void TrackDAU()
+    {
+        // Logic to track DAU
+        Debug.Log("DAU tracked.");
     }
 }
