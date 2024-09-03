@@ -32,6 +32,10 @@ MonoBehaviour:
         Id: items.SwordItem01
       properties: []
       content_legacy: 
+    - contentId:
+        Id: items.SwordItem2
+      properties: []
+      content_legacy: 
   activePeriod:
     HasValue: 0
     Value:
