@@ -32,25 +32,18 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the CreateGroupWithSpaces method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.CreateGroupWithSpaces"/>
+        /// Call the Test method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.Test"/>
         /// </summary>
-        public Beamable.Common.Promise<string> CreateGroupWithSpaces(string groupName)
+        public Beamable.Common.Promise<object> Test()
         {
-            object raw_groupName = groupName;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("groupName", raw_groupName);
-            return this.Request<string>("Service", "CreateGroupWithSpaces", serializedFields);
+            return this.Request<object>("Service", "Test", serializedFields);
         }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
-        
-        [System.SerializableAttribute()]
-        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
-        {
-        }
     }
     
     [BeamContextSystemAttribute()]
