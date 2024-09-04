@@ -32,15 +32,15 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the CreateGroupWithSpaces method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.CreateGroupWithSpaces"/>
+        /// Call the GetCurrentItems method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.GetCurrentItems"/>
         /// </summary>
-        public Beamable.Common.Promise<string> CreateGroupWithSpaces(string groupName)
+        public Beamable.Common.Promise<Beamable.Common.Api.Inventory.InventoryView> GetCurrentItems(string contentId)
         {
-            object raw_groupName = groupName;
+            object raw_contentId = contentId;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("groupName", raw_groupName);
-            return this.Request<string>("Service", "CreateGroupWithSpaces", serializedFields);
+            serializedFields.Add("contentId", raw_contentId);
+            return this.Request<Beamable.Common.Api.Inventory.InventoryView>("Service", "GetCurrentItems", serializedFields);
         }
     }
     
