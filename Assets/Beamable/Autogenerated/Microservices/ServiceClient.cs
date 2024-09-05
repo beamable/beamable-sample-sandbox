@@ -32,15 +32,19 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the CreateGroupWithSpaces method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.CreateGroupWithSpaces"/>
+        /// Call the TriggerNotificationWithDelay method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.TriggerNotificationWithDelay"/>
         /// </summary>
-        public Beamable.Common.Promise<string> CreateGroupWithSpaces(string groupName)
+        public Beamable.Common.Promise<string> TriggerNotificationWithDelay(System.Collections.Generic.List<long> playerIds, string messageContext, object payload)
         {
-            object raw_groupName = groupName;
+            object raw_playerIds = playerIds;
+            object raw_messageContext = messageContext;
+            object raw_payload = payload;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("groupName", raw_groupName);
-            return this.Request<string>("Service", "CreateGroupWithSpaces", serializedFields);
+            serializedFields.Add("playerIds", raw_playerIds);
+            serializedFields.Add("messageContext", raw_messageContext);
+            serializedFields.Add("payload", raw_payload);
+            return this.Request<string>("Service", "TriggerNotificationWithDelay", serializedFields);
         }
     }
     
@@ -48,7 +52,17 @@ namespace Beamable.Server.Clients
     {
         
         [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Collections_Generic_List_System_Int64 : MicroserviceClientDataWrapper<System.Collections.Generic.List<long>>
+        {
+        }
+        
+        [System.SerializableAttribute()]
         internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
+        {
+        }
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Object : MicroserviceClientDataWrapper<object>
         {
         }
     }
