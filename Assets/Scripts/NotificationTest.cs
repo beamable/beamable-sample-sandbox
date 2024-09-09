@@ -13,14 +13,16 @@ namespace DefaultNamespace
 
         private async void Start()
         {
+            // Initialize the Beamable context
             _beamContext = await BeamContext.Default.Instance;
+
+            // Initialize the microservice client
             _service = new ServiceClient();
             
-            // Define the payload you want to send with the notification
-            var payload = new { invitation = "invite" };
+            // Call the method from the microservice
+            await _service.A(_beamContext.PlayerId);
 
-            // Call the method from the microservice with the correct payload
-            await _service.TriggerNotificationWithDelay(new List<long> { _beamContext.PlayerId }, "TestNotification", payload);
+            Debug.Log("Triggered microservice method A.");
         }
     }
 }

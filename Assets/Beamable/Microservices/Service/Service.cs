@@ -10,33 +10,32 @@ namespace Beamable.Microservices
     public class Service : Microservice
     {
         [ClientCallable]
-        public string TriggerNotificationWithDelay(List<long> playerIds, string messageContext, object payload)
+        public Task A(long userId)
         {
-            // Perform some main task here (e.g., updating the player's status)
-            Debug.Log("Doing some work...");
-
-            // Fire-and-forget logic (task that runs asynchronously without being awaited)
-            _ = Task.Run(async () =>
-            {
-                // Simulate a delay in processing (long-running task)
-                await Task.Delay(5000); // Simulate 5-second delay
-
-                // This should trigger the ServiceScopeDisposedException
-                try
-                {
-                    var json = JsonUtility.ToJson(payload);
-                    // Try to access Services after the delay (when the scope has been disposed)
-                    await Services.Notifications.NotifyPlayer(playerIds, messageContext, json);
-                    Debug.Log("Notification sent successfully");
-                }
-                catch (Exception e)
-                {
-                    Debug.Log($"Error occurred: {e.Message}");
-                }
-            });
-
-            // Return immediately without awaiting the notification task
-            return "Notification will be attempted after delay.";
+            // update Inventory
+            // Implementing fire-and-forget pattern with a discard (_) to avoid awaiting Notify.
+            
+            Debug.Log("calling notify");
+            Task.Run(() => Notify(userId));
+            Debug.Log("done");
+            return Task.CompletedTask;
         }
+
+        private async Task Notify(long userId)
+        {
+            try
+            {
+                var questUpdate = new { message = "Quest Updated!" };
+                await Services.Notifications.NotifyPlayer(userId, "QUEST_UPDATE", questUpdate);
+                Debug.Log("Player notified");
+            }
+            catch (Exception ex)
+            {
+                // Handle potential ServiceScopeDisposedException or other exceptions
+                Debug.Log($"Error occurred during notification: {ex.Message}");
+            }
+        }
+
     }
+
 }
