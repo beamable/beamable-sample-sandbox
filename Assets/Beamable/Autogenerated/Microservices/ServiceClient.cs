@@ -32,18 +32,25 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the Test method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.Test"/>
+        /// Call the Harvest method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.Harvest"/>
         /// </summary>
-        public Beamable.Common.Promise<object> Test()
+        public Beamable.Common.Promise<Beamable.Common.Models.HarvestResponseDto> Harvest(int slotID)
         {
+            object raw_slotID = slotID;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            return this.Request<object>("Service", "Test", serializedFields);
+            serializedFields.Add("slotID", raw_slotID);
+            return this.Request<Beamable.Common.Models.HarvestResponseDto>("Service", "Harvest", serializedFields);
         }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Int32 : MicroserviceClientDataWrapper<int>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]

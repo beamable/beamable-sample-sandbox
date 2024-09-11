@@ -13,7 +13,7 @@ namespace DefaultNamespace
             _service = new ServiceClient();
             try
             {
-                var result = await _service.Test();
+                var result = await _service.Harvest(123456);
                 Debug.Log("Result: " + result);
             }
             catch (Exception ex)
