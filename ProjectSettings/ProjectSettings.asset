@@ -829,6 +829,7 @@ PlayerSettings:
   webGLPowerPreference: 2
   scriptingDefineSymbols:
     Android: BEAMABLE_PURCHASING
+    iPhone: BEAMABLE_PURCHASING
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
