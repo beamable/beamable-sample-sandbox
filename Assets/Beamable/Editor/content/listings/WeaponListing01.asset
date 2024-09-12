@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14ae295abc57d4046906c98c15f3ea23, type: 3}
   m_Name: WeaponListing01
   m_EditorClassIdentifier: 
-  _tags: []
+  _tags:
+  - base
   price:
     type: currency
     symbol: currency.gems
@@ -37,12 +38,12 @@ MonoBehaviour:
       properties: []
       content_legacy: 
   activePeriod:
-    HasValue: 0
+    HasValue: 1
     Value:
-      start: 
+      start: 2024-09-12T01:15:48Z
       end:
-        HasValue: 0
-        Value: 
+        HasValue: 1
+        Value: 2024-09-30T23:25:00Z
   purchaseLimit:
     HasValue: 0
     Value: 0
