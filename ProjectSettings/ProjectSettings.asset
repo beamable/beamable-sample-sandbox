@@ -153,7 +153,8 @@ PlayerSettings:
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier: {}
+  applicationIdentifier:
+    Android: com.DefaultCompany.SampleCodeSandbox
   buildNumber:
     Bratwurst: 0
     Standalone: 0
@@ -827,7 +828,8 @@ PlayerSettings:
   webGLMemoryGeometricGrowthStep: 0.2
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: BEAMABLE_PURCHASING
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
