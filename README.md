@@ -1,2 +1,3 @@
-# beamable-sample-sandbox
-Public repository for sharing Beamable sample code for various purposes and in various states of completeness or usability.
+# Building a Battle Pass
+
+Documentation: https://docs.beamable.com/docs/building-a-battle-pass
