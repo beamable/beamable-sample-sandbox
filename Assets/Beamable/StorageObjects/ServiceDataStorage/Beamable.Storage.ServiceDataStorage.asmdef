@@ -7,14 +7,10 @@
     "Beamable.SmallerJSON",
     "Unity.Beamable.Server.Runtime.Common",
     "Unity.Beamable.Server.Runtime.Mocks",
-    "Unity.Beamable.Customer.Common",
-    "Beamable.Storage.ServiceDataStorage"
+    "Unity.Beamable.Customer.Common"
   ],
-  "name":"Beamable.Microservice.Service",
+  "name":"Beamable.Storage.ServiceDataStorage",
   "autoReferenced":false,
-  "includePlatforms":[
-     "Editor"
-  ],
   "precompiledReferences":[
      "DnsClient.dll",
     "MongoDB.Bson.dll",
@@ -25,5 +21,8 @@
     "System.Runtime.CompilerServices.Unsafe.dll",
     "SharpCompress.dll"
   ],
-  "overrideReferences":true
+  "overrideReferences":true,
+  "includePlatforms":[
+     "Editor"
+  ]
 }
