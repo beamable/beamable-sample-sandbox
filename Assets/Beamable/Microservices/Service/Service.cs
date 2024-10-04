@@ -13,29 +13,46 @@ namespace Beamable.Microservices
     [Microservice("Service")]
     public class Service : Microservice
     {
-        private async Task ChangeHost(string lobbyName)
+        [ClientCallable]
+        public async Promise<Response<LobbyData>> ChangeHost(string lobbyName)
         {
-            var lobbyData = await Storage.GetByFieldName<LobbyData, string>("lobbyName", lobbyName);
-            if (lobbyData == null || lobbyData.memberIds.Count == 0)
-                return;
-
-            // Filter out the current host
-            var potentialNewHosts = lobbyData.memberIds.FindAll(memberId => memberId != lobbyData.hostId);
-
-            if (potentialNewHosts.Count == 0)
+            try
             {
-                Debug.LogWarning("No other members available to assign as host.");
-                return;
+                // Retrieve the lobby by its name
+                var lobbyData = await Storage.GetByFieldName<LobbyData, string>("lobbyName", lobbyName);
+                if (lobbyData == null || lobbyData.memberIds.Count == 0)
+                {
+                    Debug.LogError("Lobby not found or no members available.");
+                    return new Response<LobbyData>(null, "Lobby not found or no members available.");
+                }
+
+                // Filter out the current host from potential new hosts
+                var potentialNewHosts = lobbyData.memberIds.FindAll(memberId => memberId != lobbyData.hostId);
+
+                if (potentialNewHosts.Count == 0)
+                {
+                    Debug.LogWarning("No other members available to assign as host.");
+                    return new Response<LobbyData>(null, "No other members available to assign as host.");
+                }
+
+                // Select the first available member as the new host
+                var newHostId = potentialNewHosts[0]; // Could add additional logic for selecting the new host
+
+                // Update the lobby with the new host
+                lobbyData.hostId = newHostId;
+
+                // Save the updated lobby data
+                await Storage.Update(lobbyData.Id, lobbyData);
+                Debug.Log($"New host for lobby {lobbyName} is {newHostId}");
+
+                // Return the updated lobby data
+                return new Response<LobbyData>(lobbyData);
             }
-
-            // Select the first available member as the new host
-            var newHostId = potentialNewHosts[0]; // Could implement additional logic (e.g., random selection)
-    
-            // Update the lobby with the new host
-            lobbyData.hostId = newHostId;
-
-            await Storage.Update(lobbyData.Id, lobbyData);
-            Debug.Log($"New host for lobby {lobbyName} is {newHostId}");
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                return new Response<LobbyData>(null, "Error changing host");
+            }
         }
 
         

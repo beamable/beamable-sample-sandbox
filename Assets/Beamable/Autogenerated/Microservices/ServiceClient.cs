@@ -32,6 +32,18 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
+        /// Call the ChangeHost method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.ChangeHost"/>
+        /// </summary>
+        public Beamable.Common.Promise<Beamable.Common.Utils.Response<Beamable.Common.Models.LobbyData>> ChangeHost(string lobbyName)
+        {
+            object raw_lobbyName = lobbyName;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("lobbyName", raw_lobbyName);
+            return this.Request<Beamable.Common.Utils.Response<Beamable.Common.Models.LobbyData>>("Service", "ChangeHost", serializedFields);
+        }
+        
+        /// <summary>
         /// Call the CreateLobby method on the Service microservice
         /// <see cref="Beamable.Microservices.Service.CreateLobby"/>
         /// </summary>
