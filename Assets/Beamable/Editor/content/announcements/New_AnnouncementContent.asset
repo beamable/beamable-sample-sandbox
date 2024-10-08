@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b8612187b1a246e5b691c90486deb34, type: 3}
+  m_Name: New_AnnouncementContent
+  m_EditorClassIdentifier: 
+  _tags:
+  - base
+  channel: main
+  title: title
+  summary: summary
+  body: body
+  startDate:
+    HasValue: 0
+    Value: 2024-10-07T10:59:19Z
+  endDate:
+    HasValue: 0
+    Value: 2024-10-07T10:59:19Z
+  attachments: []
+  gift:
+    description:
+      HasValue: 0
+      Value: 
+    currencies:
+      HasValue: 0
+      Value:
+        listData: []
+    items:
+      HasValue: 0
+      Value:
+        listData: []
+    applyVipBonus:
+      HasValue: 0
+      Value: 0
+    webhooks:
+      HasValue: 0
+      Value:
+        listData: []
+  statRequirements:
+    HasValue: 0
+    Value: []
+  clientData:
+    HasValue: 0
+    Value:
+      keys: []
+      values: []
