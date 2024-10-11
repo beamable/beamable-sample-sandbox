@@ -1,27 +1,18 @@
 {
-   "name":"Beamable.Microservice.Service",
-  "rootNamespace":"",
   "references":[
-     "Unity.Beamable.Runtime.Common",
+    "Unity.Beamable.Runtime.Common",
     "Unity.Beamable.Server.Runtime",
     "Unity.Beamable.Server.Runtime.Shared",
     "Unity.Beamable",
     "Beamable.SmallerJSON",
     "Unity.Beamable.Server.Runtime.Common",
     "Unity.Beamable.Server.Runtime.Mocks",
-    "Unity.Beamable.Customer.Common",
-    "Beamable.Storage.ServiceDataStorage"
+    "Unity.Beamable.Customer.Common"
   ],
-  "includePlatforms":[
-     "Editor"
-  ],
-  "excludePlatforms":[
-     
-  ],
-  "allowUnsafeCode":false,
-  "overrideReferences":true,
+  "name":"Beamable.Storage.ServiceDataStorage",
+  "autoReferenced":false,
   "precompiledReferences":[
-     "DnsClient.dll",
+    "DnsClient.dll",
     "MongoDB.Bson.dll",
     "MongoDB.Driver.Core.dll",
     "MongoDB.Driver.dll",
@@ -30,12 +21,8 @@
     "System.Runtime.CompilerServices.Unsafe.dll",
     "SharpCompress.dll"
   ],
-  "autoReferenced":false,
-  "defineConstraints":[
-     
-  ],
-  "versionDefines":[
-     
-  ],
-  "noEngineReferences":false
+  "overrideReferences":true,
+  "includePlatforms":[
+    "Editor"
+  ]
 }

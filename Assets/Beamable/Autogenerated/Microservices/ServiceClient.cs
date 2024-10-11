@@ -30,10 +30,51 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the Ping method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.Ping"/>
+        /// </summary>
+        public Beamable.Common.Promise<Beamable.Common.Utils.Response<bool>> Ping(long playerId, long targetPlayerId)
+        {
+            object raw_playerId = playerId;
+            object raw_targetPlayerId = targetPlayerId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("playerId", raw_playerId);
+            serializedFields.Add("targetPlayerId", raw_targetPlayerId);
+            return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "Ping", serializedFields);
+        }
+        
+        /// <summary>
+        /// Call the IsPlayerTurn method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.IsPlayerTurn"/>
+        /// </summary>
+        public Beamable.Common.Promise<Beamable.Common.Utils.Response<bool>> IsPlayerTurn(long playerId)
+        {
+            object raw_playerId = playerId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("playerId", raw_playerId);
+            return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "IsPlayerTurn", serializedFields);
+        }
+        
+        /// <summary>
+        /// Call the GetFromPlayer method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.GetFromPlayer"/>
+        /// </summary>
+        public Beamable.Common.Promise<Beamable.Common.Utils.Response<long>> GetFromPlayer()
+        {
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            return this.Request<Beamable.Common.Utils.Response<long>>("Service", "GetFromPlayer", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]
