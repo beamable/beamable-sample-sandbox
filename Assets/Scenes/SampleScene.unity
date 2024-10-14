@@ -419,7 +419,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1b2edab9f8462b9bd06cb094476f1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _battlepassRef:
+  battlepassRef:
     Id: battlepass.Season1Battlepass
 --- !u!4 &1040858437
 Transform:

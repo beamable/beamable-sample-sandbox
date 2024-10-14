@@ -30,10 +30,27 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the ClaimReward method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.ClaimReward"/>
+        /// </summary>
+        public Beamable.Common.Promise<string> ClaimReward(int tierLevel)
+        {
+            object raw_tierLevel = tierLevel;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("tierLevel", raw_tierLevel);
+            return this.Request<string>("Service", "ClaimReward", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Int32 : MicroserviceClientDataWrapper<int>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]

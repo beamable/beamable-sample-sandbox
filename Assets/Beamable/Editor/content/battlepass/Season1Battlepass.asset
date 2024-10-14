@@ -20,7 +20,7 @@ MonoBehaviour:
     Rewards:
     - {fileID: 11400000, guid: 30edbada091d8ca4892007cd0c9db7b6, type: 2}
     - {fileID: 11400000, guid: ce70453e8056b0a418c01c8a56d206fe, type: 2}
-  - Level: 2
+  - Level: 3
     Rewards:
     - {fileID: 11400000, guid: 30edbada091d8ca4892007cd0c9db7b6, type: 2}
     - {fileID: 11400000, guid: ce70453e8056b0a418c01c8a56d206fe, type: 2}
