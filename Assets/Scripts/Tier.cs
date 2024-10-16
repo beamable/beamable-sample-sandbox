@@ -9,5 +9,6 @@ namespace DefaultNamespace
     {
         public int Level;
         public List<RewardScriptableObject> Rewards; 
+        public List<ComplexRewardScriptableObject> ComplexRewards; 
     }
 }
