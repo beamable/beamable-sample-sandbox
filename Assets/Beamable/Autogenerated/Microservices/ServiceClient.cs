@@ -30,10 +30,55 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the UpdateInventory method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.UpdateInventory"/>
+        /// </summary>
+        public Beamable.Common.Promise<Beamable.Common.Unit> UpdateInventory(string itemRef, int itemId, System.Collections.Generic.Dictionary<string, string> itemProperties)
+        {
+            object raw_itemRef = itemRef;
+            object raw_itemId = itemId;
+            object raw_itemProperties = itemProperties;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("itemRef", raw_itemRef);
+            serializedFields.Add("itemId", raw_itemId);
+            serializedFields.Add("itemProperties", raw_itemProperties);
+            return this.Request<Beamable.Common.Unit>("Service", "UpdateInventory", serializedFields);
+        }
+        
+        /// <summary>
+        /// Call the AddToInventory method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.AddToInventory"/>
+        /// </summary>
+        public Beamable.Common.Promise<Beamable.Common.Unit> AddToInventory(string itemRef, System.Collections.Generic.Dictionary<string, string> itemProperties)
+        {
+            object raw_itemRef = itemRef;
+            object raw_itemProperties = itemProperties;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("itemRef", raw_itemRef);
+            serializedFields.Add("itemProperties", raw_itemProperties);
+            return this.Request<Beamable.Common.Unit>("Service", "AddToInventory", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
+        {
+        }
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Int32 : MicroserviceClientDataWrapper<int>
+        {
+        }
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Collections_Generic_Dictionary_System_String_System_String : MicroserviceClientDataWrapper<System.Collections.Generic.Dictionary<string, string>>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]
