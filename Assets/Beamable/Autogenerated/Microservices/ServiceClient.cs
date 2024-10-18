@@ -15,7 +15,7 @@ namespace Beamable.Server.Clients
     
     
     /// <summary> A generated client for <see cref="Beamable.Microservices.Service"/> </summary
-    public sealed class ServiceClient : MicroserviceClient, Beamable.Common.IHaveServiceName
+    public sealed class ServiceClient : MicroserviceClient, Beamable.Common.IHaveServiceName, Beamable.Common.ISupportsFederatedLogin<DefaultNamespace.KoinIdentity>
     {
         
         public ServiceClient(BeamContext context = null) : 

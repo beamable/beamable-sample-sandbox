@@ -1,17 +1,26 @@
 {
-   "references":[
-     "Unity.Beamable.Runtime.Common",
-    "Unity.Beamable.Server.Runtime",
-    "Unity.Beamable.Server.Runtime.Shared",
-    "Unity.Beamable",
-    "Beamable.SmallerJSON",
-    "Unity.Beamable.Server.Runtime.Common",
-    "Unity.Beamable.Server.Runtime.Mocks",
-    "Unity.Beamable.Customer.Common"
-  ],
-  "name":"Beamable.Microservice.Service",
-  "autoReferenced":false,
-  "includePlatforms":[
-     "Editor"
-  ]
+    "name": "Beamable.Microservice.Service",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Beamable.Runtime.Common",
+        "Unity.Beamable.Server.Runtime",
+        "Unity.Beamable.Server.Runtime.Shared",
+        "Unity.Beamable",
+        "Beamable.SmallerJSON",
+        "Unity.Beamable.Server.Runtime.Common",
+        "Unity.Beamable.Server.Runtime.Mocks",
+        "Unity.Beamable.Customer.Common",
+        "ModelsAssembly"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
