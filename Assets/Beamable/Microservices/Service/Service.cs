@@ -13,8 +13,7 @@ namespace Beamable.Microservices
     [Microservice("Service")]
     public class Service : Microservice
     {
-        
-         // Method to check if a device is authorized
+        // Method to check if a device is authorized
         [ClientCallable]
         public async Task<Response<bool>> CheckDeviceAuthorization(string email, string deviceId)
         {
@@ -41,11 +40,10 @@ namespace Beamable.Microservices
         [ClientCallable]
         public async Task<Response<bool>> AuthorizeDevice(string email, string deviceId)
         {
-            Debug.Log("sfe");
             try
             {
                 // Fetch or create device data for the player
-                var deviceData = await Storage.GetByFieldName<AuthorizedDeviceData, string>("PlayerId", email);
+                var deviceData = await Storage.GetByFieldName<AuthorizedDeviceData, string>("Email", email);
 
                 if (deviceData == null)
                 {
@@ -83,7 +81,7 @@ namespace Beamable.Microservices
             try
             {
                 // Fetch the player's device data
-                var deviceData = await Storage.GetByFieldName<AuthorizedDeviceData, string>("PlayerId", email);
+                var deviceData = await Storage.GetByFieldName<AuthorizedDeviceData, string>("Email", email);
 
                 if (deviceData != null)
                 {
@@ -98,6 +96,42 @@ namespace Beamable.Microservices
             {
                 BeamableLogger.LogError(e);
                 return new Response<bool>(false, "Error resetting device authorizations.");
+            }
+        }
+
+        // Method to clear all devices and keep only the current device
+        [ClientCallable]
+        public async Task<Response<bool>> ClearAndKeepCurrentDevice(string email, string currentDeviceId)
+        {
+            try
+            {
+                // Fetch the player's device data
+                var deviceData = await Storage.GetByFieldName<AuthorizedDeviceData, string>("Email", email);
+
+                if (deviceData == null)
+                {
+                    // If no data exists for this email, create new entry with current device
+                    deviceData = new AuthorizedDeviceData()
+                    {
+                        Email = email,
+                        AuthorizedDeviceIds = new List<string> { currentDeviceId }
+                    };
+                    await Storage.Create<ServiceDataStorage, AuthorizedDeviceData>(deviceData);
+                }
+                else
+                {
+                    // Clear all devices and add only the current device
+                    deviceData.AuthorizedDeviceIds.Clear();
+                    deviceData.AuthorizedDeviceIds.Add(currentDeviceId);
+                    await Storage.Update(deviceData.Id, deviceData);
+                }
+
+                return new Response<bool>(true, "All devices cleared, only current device authorized.");
+            }
+            catch (Exception e)
+            {
+                BeamableLogger.LogError(e);
+                return new Response<bool>(false, "Error clearing devices.");
             }
         }
     }
