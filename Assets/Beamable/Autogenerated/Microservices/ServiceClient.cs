@@ -32,39 +32,43 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the Ping method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.Ping"/>
+        /// Call the CheckDeviceAuthorization method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.CheckDeviceAuthorization"/>
         /// </summary>
-        public Beamable.Common.Promise<Beamable.Common.Utils.Response<bool>> Ping(long playerId, long targetPlayerId)
+        public Beamable.Common.Promise<Beamable.Common.Utils.Response<bool>> CheckDeviceAuthorization(string email, string deviceId)
         {
-            object raw_playerId = playerId;
-            object raw_targetPlayerId = targetPlayerId;
+            object raw_email = email;
+            object raw_deviceId = deviceId;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("playerId", raw_playerId);
-            serializedFields.Add("targetPlayerId", raw_targetPlayerId);
-            return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "Ping", serializedFields);
+            serializedFields.Add("email", raw_email);
+            serializedFields.Add("deviceId", raw_deviceId);
+            return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "CheckDeviceAuthorization", serializedFields);
         }
         
         /// <summary>
-        /// Call the IsPlayerTurn method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.IsPlayerTurn"/>
+        /// Call the AuthorizeDevice method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.AuthorizeDevice"/>
         /// </summary>
-        public Beamable.Common.Promise<Beamable.Common.Utils.Response<bool>> IsPlayerTurn(long playerId)
+        public Beamable.Common.Promise<Beamable.Common.Utils.Response<bool>> AuthorizeDevice(string email, string deviceId)
         {
-            object raw_playerId = playerId;
+            object raw_email = email;
+            object raw_deviceId = deviceId;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("playerId", raw_playerId);
-            return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "IsPlayerTurn", serializedFields);
+            serializedFields.Add("email", raw_email);
+            serializedFields.Add("deviceId", raw_deviceId);
+            return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "AuthorizeDevice", serializedFields);
         }
         
         /// <summary>
-        /// Call the GetFromPlayer method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.GetFromPlayer"/>
+        /// Call the ResetDeviceAuthorizations method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.ResetDeviceAuthorizations"/>
         /// </summary>
-        public Beamable.Common.Promise<Beamable.Common.Utils.Response<long>> GetFromPlayer()
+        public Beamable.Common.Promise<Beamable.Common.Utils.Response<bool>> ResetDeviceAuthorizations(string email)
         {
+            object raw_email = email;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            return this.Request<Beamable.Common.Utils.Response<long>>("Service", "GetFromPlayer", serializedFields);
+            serializedFields.Add("email", raw_email);
+            return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "ResetDeviceAuthorizations", serializedFields);
         }
     }
     
@@ -72,7 +76,7 @@ namespace Beamable.Server.Clients
     {
         
         [System.SerializableAttribute()]
-        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
+        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
         {
         }
     }

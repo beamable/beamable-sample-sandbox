@@ -13,94 +13,91 @@ namespace Beamable.Microservices
     [Microservice("Service")]
     public class Service : Microservice
     {
-        private const long TurnDataId = 1111111111111;
         
+         // Method to check if a device is authorized
         [ClientCallable]
-        public async Task<Response<bool>> Ping(long playerId, long targetPlayerId)
+        public async Task<Response<bool>> CheckDeviceAuthorization(string email, string deviceId)
         {
             try
             {
-                // Fetch the turnData by playerId
-                var turnData = await Storage.GetByFieldName<TurnData, long>("TurnDataId", TurnDataId);
-
-                if (turnData == null)
-                {
-                    // Create TurnData if it doesn't exist
-                    turnData = new TurnData()
-                    {
-                        TurnDataId = TurnDataId,
-                        CurrentTurn = playerId
-                    };
-                    await Storage.Create<ServiceDataStorage, TurnData>(turnData);
-                }
-
-                // Check if it's the player's turn
-                if (turnData.CurrentTurn != playerId)
-                {
-                    return new Response<bool>(false, "It's not your turn.");
-                }
-
-                // Switch turn to the other player and update turnData
-                turnData.SwitchTurn(targetPlayerId);
-                Debug.Log($"From player: {turnData.FromPlayer}");
-                // Send the ping notification to the other player
-                await SendPingNotification(turnData); // Pass both sender and target
-
-                await Storage.Update(turnData.Id, turnData);
-
-                return new Response<bool>(true);
-            }
-            catch (Exception e)
-            {
-                BeamableLogger.LogError(e);
-                return new Response<bool>(false, "Error sending ping.");
-            }
-        }
-
-        // Helper method to send a ping notification with senderId included
-        private async Task SendPingNotification(TurnData turnData)
-        {
-            var playerIds = new List<long> { turnData.CurrentTurn };
-            await Services.Notifications.NotifyPlayer(playerIds, "PingNotification", turnData);
-        }
-
-        [ClientCallable]
-        public async Task<Response<bool>> IsPlayerTurn(long playerId)
-        {
-            try
-            {
-                // Fetch the TurnData by shared TurnDataId or session ID
-                var turnData = await Storage.GetByFieldName<TurnData, long>("TurnDataId", TurnDataId);
-
-                if (turnData == null)
-                {
-                    return new Response<bool>(false, "No turn data found.");
-                }
+                // Fetch the device data for the player
+                var deviceData = await Storage.GetByFieldName<AuthorizedDeviceData, string>("Email", email);
                 
-                // Return true if it's the player's turn, otherwise false
-                var isPlayerTurn = turnData.CurrentTurn == playerId;
-                return new Response<bool>(isPlayerTurn);
+                if (deviceData == null || !deviceData.AuthorizedDeviceIds.Contains(deviceId))
+                {
+                    return new Response<bool>(false, "Unauthorized device.");
+                }
+
+                return new Response<bool>(true, "Device is authorized.");
             }
             catch (Exception e)
             {
                 BeamableLogger.LogError(e);
-                return new Response<bool>(false, "Error retrieving turn data.");
+                return new Response<bool>(false, "Error checking device authorization.");
             }
         }
 
+        // Method to authorize a new device for a player
         [ClientCallable]
-        public async Task<Response<long>> GetFromPlayer()
+        public async Task<Response<bool>> AuthorizeDevice(string email, string deviceId)
         {
+            Debug.Log("sfe");
             try
             {
-                // Fetch TurnData from storage
-                var turnData = await Storage.GetByFieldName<TurnData, long>("TurnDataId", TurnDataId);
-                return turnData != null ? new Response<long>(turnData.FromPlayer) : new Response<long>(0, "No turn data found.");
+                // Fetch or create device data for the player
+                var deviceData = await Storage.GetByFieldName<AuthorizedDeviceData, string>("PlayerId", email);
+
+                if (deviceData == null)
+                {
+                    // Create a new entry if no data exists for the player
+                    deviceData = new AuthorizedDeviceData()
+                    {
+                        Email = email,
+                        AuthorizedDeviceIds = new List<string> { deviceId }
+                    };
+                    await Storage.Create<ServiceDataStorage, AuthorizedDeviceData>(deviceData);
+                }
+                else
+                {
+                    // Add deviceId to the list if it's not already authorized
+                    if (!deviceData.AuthorizedDeviceIds.Contains(deviceId))
+                    {
+                        deviceData.AuthorizedDeviceIds.Add(deviceId);
+                        await Storage.Update(deviceData.Id, deviceData);
+                    }
+                }
+
+                return new Response<bool>(true, "Device authorized.");
             }
             catch (Exception e)
             {
                 BeamableLogger.LogError(e);
-                return new Response<long>(0, "Error retrieving FromPlayer.");
+                return new Response<bool>(false, "Error authorizing device.");
+            }
+        }
+
+        // Method to reset device authorizations for a player (used after password reset)
+        [ClientCallable]
+        public async Task<Response<bool>> ResetDeviceAuthorizations(string email)
+        {
+            try
+            {
+                // Fetch the player's device data
+                var deviceData = await Storage.GetByFieldName<AuthorizedDeviceData, string>("PlayerId", email);
+
+                if (deviceData != null)
+                {
+                    // Clear the list of authorized devices
+                    deviceData.AuthorizedDeviceIds.Clear();
+                    await Storage.Update(deviceData.Id, deviceData);
+                }
+
+                return new Response<bool>(true, "Device authorizations reset.");
+            }
+            catch (Exception e)
+            {
+                BeamableLogger.LogError(e);
+                return new Response<bool>(false, "Error resetting device authorizations.");
             }
         }
     }
