@@ -30,10 +30,70 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the SetLeaderboardScore method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.SetLeaderboardScore"/>
+        /// </summary>
+        public Beamable.Common.Promise<System.Threading.Tasks.Task> SetLeaderboardScore(string leaderboardId, double score)
+        {
+            object raw_leaderboardId = leaderboardId;
+            object raw_score = score;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("leaderboardId", raw_leaderboardId);
+            serializedFields.Add("score", raw_score);
+            return this.Request<System.Threading.Tasks.Task>("Service", "SetLeaderboardScore", serializedFields);
+        }
+        
+        /// <summary>
+        /// Call the CreateLeaderboard method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.CreateLeaderboard"/>
+        /// </summary>
+        public Beamable.Common.Promise<System.Threading.Tasks.Task> CreateLeaderboard(string leaderboardId)
+        {
+            object raw_leaderboardId = leaderboardId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("leaderboardId", raw_leaderboardId);
+            return this.Request<System.Threading.Tasks.Task>("Service", "CreateLeaderboard", serializedFields);
+        }
+        
+        /// <summary>
+        /// Call the LeaderboardExists method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.LeaderboardExists"/>
+        /// </summary>
+        public Beamable.Common.Promise<bool> LeaderboardExists(string leaderboardId)
+        {
+            object raw_leaderboardId = leaderboardId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("leaderboardId", raw_leaderboardId);
+            return this.Request<bool>("Service", "LeaderboardExists", serializedFields);
+        }
+        
+        /// <summary>
+        /// Call the RemoveLeaderboardScore method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.RemoveLeaderboardScore"/>
+        /// </summary>
+        public Beamable.Common.Promise<System.Threading.Tasks.Task> RemoveLeaderboardScore(string leaderboardId)
+        {
+            object raw_leaderboardId = leaderboardId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("leaderboardId", raw_leaderboardId);
+            return this.Request<System.Threading.Tasks.Task>("Service", "RemoveLeaderboardScore", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
+        {
+        }
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Double : MicroserviceClientDataWrapper<double>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]
