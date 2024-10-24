@@ -70,6 +70,20 @@ namespace Beamable.Server.Clients
             serializedFields.Add("email", raw_email);
             return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "ResetDeviceAuthorizations", serializedFields);
         }
+        
+        /// <summary>
+        /// Call the ClearAndKeepCurrentDevice method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.ClearAndKeepCurrentDevice"/>
+        /// </summary>
+        public Beamable.Common.Promise<Beamable.Common.Utils.Response<bool>> ClearAndKeepCurrentDevice(string email, string currentDeviceId)
+        {
+            object raw_email = email;
+            object raw_currentDeviceId = currentDeviceId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("email", raw_email);
+            serializedFields.Add("currentDeviceId", raw_currentDeviceId);
+            return this.Request<Beamable.Common.Utils.Response<bool>>("Service", "ClearAndKeepCurrentDevice", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
