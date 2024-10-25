@@ -1,9 +1,8 @@
-using System;
 using System.Threading.Tasks;
 using Beamable;
-using Beamable.Server.Clients;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace DefaultNamespace
 {
@@ -11,14 +10,13 @@ namespace DefaultNamespace
     {
         private BeamContext _beamContext;
         private long _userId;
-        private ServiceClient _service;
+        private const string TournamentId = "YourTournamentId"; // Replace with your actual tournament ID
 
         private async void Start()
         {
             // Initialize Beamable context
             _beamContext = await BeamContext.Default.Instance;
             _userId = _beamContext.PlayerId;
-            _service = new ServiceClient();
             
             Debug.Log($"User Id: {_userId}");
 
@@ -44,28 +42,27 @@ namespace DefaultNamespace
             // Step 1: Get the current league from stats
             var currentLeague = await GetCurrentLeague();
 
-            // Step 2: Assign player to the new league based on their new score
+            // Step 2: Determine the player's new league based on their updated score
             var newLeague = AssignLeague(playerScore);
-            var newLeaderboardId = $"{newLeague}_Leaderboard";
-            
-            // Step 3: Remove the player from the previous league if they are switching leagues
+
+            // Step 3: If the player is switching leagues, handle the transition
             if (currentLeague != null && !currentLeague.Equals(newLeague))
             {
-                Debug.Log($"Player is switching from {currentLeague} to {newLeague}. Removing from {currentLeague}_Leaderboard.");
-                await RemovePlayerFromPreviousLeaderboard($"{currentLeague}_Leaderboard");
+                Debug.Log($"Player is switching from {currentLeague} to {newLeague}.");
+                // No need to manually remove from previous leaderboard since tournaments handle this internally
             }
 
-            // Step 4: Ensure the new league's leaderboard exists
-            await EnsureLeaderboardExists(newLeaderboardId);
+            // Step 4: Ensure the player is joined to the correct tier in the tournament
+            await JoinLeagueTournament(newLeague, playerScore);
 
-            // Step 5: Set the player's score on the new league's leaderboard
-            await SetScoreOnLeagueLeaderboard(newLeaderboardId, playerScore);
+            // Step 5: Set the player's score in the correct tournament tier
+            await SetScoreInTournament(playerScore);
 
             // Step 6: Update the player's current league in stats
             await SetCurrentLeague(newLeague);
 
-            // Step 7: Display the updated leaderboard
-            await DisplayLeagueLeaderboard(newLeaderboardId);
+            // Step 7: Display the updated rankings for the player's league
+            await DisplayLeagueRankings(newLeague);
         }
 
         private async Task<string> GetCurrentLeague()
@@ -108,59 +105,26 @@ namespace DefaultNamespace
             Debug.Log("Player's league updated in stats.");
         }
 
-        private async Task RemovePlayerFromPreviousLeaderboard(string leaderboardId)
+        private async Task JoinLeagueTournament(string leagueTier, double score)
         {
-            // Remove player from the previous leaderboard
-            Debug.Log($"Removing player from {leaderboardId}");
-            try
-            {
-                await _service.RemoveLeaderboardScore(leaderboardId);
-                Debug.Log($"Player removed from {leaderboardId}");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to remove player from {leaderboardId}: {e.Message}");
-            }
+            Debug.Log($"Joining tournament {TournamentId} in tier {leagueTier}...");
+
+            // Join the tournament and specify the tier
+            await _beamContext.Api.TournamentsService.JoinTournament(TournamentId, score);
         }
 
-        private async Task EnsureLeaderboardExists(string leaderboardId)
+        private async Task SetScoreInTournament(double score)
         {
-            Debug.Log($"Checking if leaderboard {leaderboardId} exists...");
-
-            // Check if the leaderboard exists
-            var leaderboardExists = await _service.LeaderboardExists(leaderboardId);
-
-            // Create the leaderboard if it doesn't exist
-            if (!leaderboardExists)
-            {
-                Debug.Log($"Leaderboard {leaderboardId} doesn't exist. Creating...");
-                await _service.CreateLeaderboard(leaderboardId);
-                Debug.Log($"Leaderboard {leaderboardId} created.");
-            }
-            else
-            {
-                Debug.Log($"Leaderboard {leaderboardId} already exists.");
-            }
+            Debug.Log($"Setting score in tournament {TournamentId}...");
+            await _beamContext.Api.TournamentsService.SetScore(TournamentId, _userId, score);
         }
 
-        private async Task SetScoreOnLeagueLeaderboard(string leaderboardId, double score)
+        private async Task DisplayLeagueRankings(string leagueTier)
         {
-            Debug.Log($"Setting score on {leaderboardId}");
-            await _service.SetLeaderboardScore(leaderboardId, score);
-        }
+            Debug.Log($"Retrieving rankings for league tier: {leagueTier} in tournament {TournamentId}...");
 
-        private async Task DisplayLeagueLeaderboard(string leaderboardId)
-        {
-            Debug.Log($"Retrieving leaderboard for {leaderboardId}");
+            // Get and display the rankings for the current league's tier
 
-            // Get the leaderboard data for the league
-            var leaderboardContent = await _beamContext.Api.LeaderboardService.GetBoard(leaderboardId, 0, 10);
-            
-            // Display the top 10 players in the league
-            foreach (var entry in leaderboardContent.rankings)
-            {
-                Debug.Log($"Player: {entry.gt}, Rank: {entry.rank}, Score: {entry.score}");
-            }
         }
     }
 }
