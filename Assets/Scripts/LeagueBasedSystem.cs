@@ -1,8 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using Beamable;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.SocialPlatforms.Impl;
 
 namespace DefaultNamespace
 {
@@ -10,7 +10,7 @@ namespace DefaultNamespace
     {
         private BeamContext _beamContext;
         private long _userId;
-        private const string TournamentId = "YourTournamentId"; // Replace with your actual tournament ID
+        private const string TournamentId = "tournaments.default"; // Replace with your actual tournament ID
 
         private async void Start()
         {
@@ -49,10 +49,9 @@ namespace DefaultNamespace
             if (currentLeague != null && !currentLeague.Equals(newLeague))
             {
                 Debug.Log($"Player is switching from {currentLeague} to {newLeague}.");
-                // No need to manually remove from previous leaderboard since tournaments handle this internally
             }
 
-            // Step 4: Ensure the player is joined to the correct tier in the tournament
+            // Step 4: Join the correct tournament tier (league) if not already joined
             await JoinLeagueTournament(newLeague, playerScore);
 
             // Step 5: Set the player's score in the correct tournament tier
@@ -107,10 +106,29 @@ namespace DefaultNamespace
 
         private async Task JoinLeagueTournament(string leagueTier, double score)
         {
-            Debug.Log($"Joining tournament {TournamentId} in tier {leagueTier}...");
+            Debug.Log($"Checking if player is already in tournament {TournamentId} in tier {leagueTier}...");
 
-            // Join the tournament and specify the tier
-            await _beamContext.Api.TournamentsService.JoinTournament(TournamentId, score);
+            try
+            {
+                // Check if the player is already part of the tournament
+                var playerStatusResponse = await _beamContext.Api.TournamentsService.GetPlayerStatus(TournamentId);
+                bool isAlreadyJoined = playerStatusResponse.statuses.Exists(status => status.tournamentId == TournamentId);
+
+                if (!isAlreadyJoined)
+                {
+                    // Join the tournament if the player is not already part of it
+                    await _beamContext.Api.TournamentsService.JoinTournament(TournamentId, score);
+                    Debug.Log($"Player joined tournament {TournamentId} in tier {leagueTier}.");
+                }
+                else
+                {
+                    Debug.Log("Player is already part of the tournament.");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error checking or joining tournament: {e.Message}");
+            }
         }
 
         private async Task SetScoreInTournament(double score)
@@ -124,7 +142,19 @@ namespace DefaultNamespace
             Debug.Log($"Retrieving rankings for league tier: {leagueTier} in tournament {TournamentId}...");
 
             // Get and display the rankings for the current league's tier
+            try
+            {
+                var leaderboardContent = await _beamContext.Api.TournamentsService.GetStandings(TournamentId, 0, 10);
 
+                foreach (var entry in leaderboardContent.entries)
+                {
+                    Debug.Log($"Player: {entry.playerId}, Rank: {entry.rank}, Score: {entry.score}");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error fetching rankings: {e.Message}");
+            }
         }
     }
 }
