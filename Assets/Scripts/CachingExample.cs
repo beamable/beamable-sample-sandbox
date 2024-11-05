@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class LeagueBasedSystem : MonoBehaviour
+    public class CachingExample : MonoBehaviour
     {
         private BeamContext _beamContext;
         private long _userId;
