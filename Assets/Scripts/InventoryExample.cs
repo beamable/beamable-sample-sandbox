@@ -16,44 +16,50 @@ public class InventoryExample : MonoBehaviour
         _beamContext = await BeamContext.Default.Instance;
         Debug.Log($"Beamable initialized, PlayerId: {_beamContext.PlayerId}");
         
-
+        // // Adding 1000 items to the inventory
+        // for (int i = 1; i <= 1000; i++)
+        // {
+        //     string itemRef = $"items.SwordItem01"; // Example item name
+        //     AddToInventory(itemRef, 1, "Amount");
+        // }
         await GetInventory();
+        
     }
 
-    private async Task GetInventory()
-    {
-        Debug.Log("Fetching inventory...");
-        var items = _beamContext.Inventory.GetItems();
-    
-        await items.Refresh();
-        inventoryItems.Clear();
-    
-        foreach (var item in items)
-        {
-            Debug.Log($"Item id=[{item.ItemId}] type=[{item.ContentId}]");
-            inventoryItems.Add($"Item id=[{item.ItemId}], type=[{item.ContentId}]");
-        }
-    
-        Debug.Log("Inventory fetched successfully.");
-    }
-    
     // private async Task GetInventory()
     // {
     //     Debug.Log("Fetching inventory...");
-    //     var inventoryView = await _beamContext.Api.InventoryService.GetCurrent("");
+    //     var items = _beamContext.Inventory.GetItems();
     //
-    //     foreach (var item in inventoryView.items)
+    //     await items.Refresh();
+    //     inventoryItems.Clear();
+    //
+    //     foreach (var item in items)
     //     {
-    //         List<ItemView> itemList = item.Value; // Access the List<ItemView> directly
-    //         foreach (var itemView in itemList)
-    //         {
-    //             Debug.Log($"Item id=[{itemView.id}] type=[{itemView.contentId}]");
-    //             inventoryItems.Add($"Item id=[{itemView.id}], type=[{itemView.contentId}]");
-    //         }
+    //         Debug.Log($"Item id=[{item.ItemId}] type=[{item.ContentId}]");
+    //         inventoryItems.Add($"Item id=[{item.ItemId}], type=[{item.ContentId}]");
     //     }
     //
     //     Debug.Log("Inventory fetched successfully.");
     // }
+    
+    private async Task GetInventory()
+    {
+        Debug.Log("Fetching inventory...");
+        var inventoryView = await _beamContext.Api.InventoryService.GetCurrent("items");
+    
+        foreach (var item in inventoryView.items)
+        {
+            List<ItemView> itemList = item.Value; // Access the List<ItemView> directly
+            foreach (var itemView in itemList)
+            {
+                Debug.Log($"Item id=[{itemView.id}] type=[{itemView.contentId}]");
+                inventoryItems.Add($"Item id=[{itemView.id}], type=[{itemView.contentId}]");
+            }
+        }
+    
+        Debug.Log("Inventory fetched successfully.");
+    }
 
 
 
