@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using Beamable.Api.Connectivity;
 using Beamable.Common;
-using UnityEngine;
-using UnityEngine.Networking;
 
 namespace DefaultNamespace
 {

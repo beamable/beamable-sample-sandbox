@@ -43,7 +43,7 @@ using UnityEngine;
                     return;
                 
                 await Task.Delay(TimeSpan.FromSeconds(HeartbeatInterval));
-                CheckConnectivity();  // Invoke connectivity check at custom intervals
+                CheckConnectivity();  
             }
         }
         
