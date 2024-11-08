@@ -67,7 +67,6 @@ namespace Beamable.Microservices
         {
             try
             {
-                Debug.Log(Context.UserId);
                 await Services.Leaderboards.RemovePlayerEntry(leaderboardId, Context.UserId);
             }   
             catch (Exception e)

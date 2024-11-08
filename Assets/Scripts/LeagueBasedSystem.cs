@@ -19,7 +19,6 @@ namespace DefaultNamespace
             _beamContext = await BeamContext.Default.Instance;
             _userId = _beamContext.PlayerId;
             _service = new ServiceClient();
-            
             Debug.Log($"User Id: {_userId}");
 
             // Example score - this would come from game logic
@@ -46,7 +45,7 @@ namespace DefaultNamespace
 
             // Step 2: Assign player to the new league based on their new score
             var newLeague = AssignLeague(playerScore);
-            var newLeaderboardId = $"{newLeague}_Leaderboard";
+            var newLeaderboardId = $"leaderboards.Sr_dev_silver";
             
             // Step 3: Remove the player from the previous league if they are switching leagues
             if (currentLeague != null && !currentLeague.Equals(newLeague))
@@ -128,14 +127,15 @@ namespace DefaultNamespace
             Debug.Log($"Checking if leaderboard {leaderboardId} exists...");
 
             // Check if the leaderboard exists
+            Debug.Log(leaderboardId);
             var leaderboardExists = await _service.LeaderboardExists(leaderboardId);
 
             // Create the leaderboard if it doesn't exist
             if (!leaderboardExists)
             {
                 Debug.Log($"Leaderboard {leaderboardId} doesn't exist. Creating...");
-                await _service.CreateLeaderboard(leaderboardId);
-                Debug.Log($"Leaderboard {leaderboardId} created.");
+                // await _service.CreateLeaderboard(leaderboardId);
+                // Debug.Log($"Leaderboard {leaderboardId} created.");
             }
             else
             {
@@ -147,6 +147,8 @@ namespace DefaultNamespace
         {
             Debug.Log($"Setting score on {leaderboardId}");
             await _service.SetLeaderboardScore(leaderboardId, score);
+            Debug.Log($"Set score on {leaderboardId} for {_beamContext.PlayerId}");
+
         }
 
         private async Task DisplayLeagueLeaderboard(string leaderboardId)
