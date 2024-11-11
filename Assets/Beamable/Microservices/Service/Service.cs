@@ -8,6 +8,6 @@ namespace Beamable.Microservices
     [Microservice("Service")]
     public class Service : Microservice
     {
-        
+
     }
 }

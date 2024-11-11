@@ -2,6 +2,7 @@ using Beamable;
 using Beamable.Api.Connectivity;
 using Beamable.Common.Api;
 using Beamable.Common.Dependencies;
+using CustomConnectivity;
 using DefaultNamespace;
 
 [BeamContextSystem]

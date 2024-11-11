@@ -27,7 +27,6 @@ public class ConnectivityRepro : MonoBehaviour
     private async Task SetupBeamable()
     {
         _beamContext = await BeamContext.Default.Instance;
-
         Debug.Log($"BeamContext PlayerId: {_beamContext.PlayerId}");
 
         _connectivityService.OnConnectivityChanged += ConnectivityService_OnConnectivityChanged;

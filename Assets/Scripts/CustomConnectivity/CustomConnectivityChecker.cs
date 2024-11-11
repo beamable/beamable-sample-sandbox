@@ -3,10 +3,13 @@ using System.Threading.Tasks;
 using Beamable.Common;
 using Beamable.Common.Api;
 using UnityEngine;
+using UnityEngine.Networking;
 
+namespace CustomConnectivity
+{
     public class CustomConnectivityChecker : IConnectivityChecker
     {
-        private float HeartbeatInterval { get; set; } = 10f;  // Customizable heartbeat interval
+        private float HeartbeatInterval { get; set; } = 5f;  // Customizable heartbeat interval
         public event Action<bool> OnConnectivityChanged;
 
         private bool _isConnected = true;
@@ -31,8 +34,50 @@ using UnityEngine;
 
         private void CheckConnectivity()
         {
-            _isConnected = !Disabled;
-            OnConnectivityChanged?.Invoke(_isConnected);
+            // _isConnected = !Disabled;
+            // OnConnectivityChanged?.Invoke(_isConnected);
+            // if (_disabled)
+            // {
+            //     _isConnected = false;
+            //     OnConnectivityChanged?.Invoke(false);
+            //     return;
+            // }
+
+            // Attempt a simple network request to check connectivity
+            using (var request = UnityWebRequest.Get("https://www.google.com"))
+            {
+                try
+                {
+                    request.SendWebRequest();
+                    
+                    // Determine connection status based on request result
+                    if (request.result == UnityWebRequest.Result.Success)
+                    {
+                        if (!_isConnected)
+                        {
+                            _isConnected = true;
+                            OnConnectivityChanged?.Invoke(true);
+                        }
+                    }
+                    else
+                    {
+                        if (_isConnected)
+                        {
+                            _isConnected = false;
+                            OnConnectivityChanged?.Invoke(false);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError("Connectivity check failed: " + ex.Message);
+                    if (_isConnected)
+                    {
+                        _isConnected = false;
+                        OnConnectivityChanged?.Invoke(false);
+                    }
+                }
+            }
         }
 
         private async void StartHeartbeat()
@@ -66,3 +111,4 @@ using UnityEngine;
 
         public bool ConnectivityCheckingEnabled { get; set; }
     }
+}
