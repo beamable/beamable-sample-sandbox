@@ -6,6 +6,7 @@ using Beamable.Common.Models;
 using Beamable.Common.Utils;
 using Beamable.Mongo;
 using Beamable.Server;
+using Beamable.Server.Api.Leaderboards;
 using UnityEngine;
 
 namespace Beamable.Microservices
@@ -13,156 +14,136 @@ namespace Beamable.Microservices
     [Microservice("Service")]
     public class Service : Microservice
     {
+  private const int EventDurationHours = 4;
+
         [ClientCallable]
-        public async Promise<Response<LobbyData>> ChangeHost(string lobbyName)
+        public async Task<Response<EventData>> CreateEvent(string eventName)
         {
             try
             {
-                // Retrieve the lobby by its name
-                var lobbyData = await Storage.GetByFieldName<LobbyData, string>("lobbyName", lobbyName);
-                if (lobbyData == null || lobbyData.memberIds.Count == 0)
+                var leaderboardId = $"leaderboard_{eventName}_{DateTime.UtcNow.Ticks}";
+
+                // Create the leaderboard for this event
+                await Services.Leaderboards.CreateLeaderboard(leaderboardId, new CreateLeaderboardRequest());
+
+                // Define start and end times for the event
+                DateTime startTime = DateTime.UtcNow;
+                DateTime endTime = startTime.AddHours(EventDurationHours);
+
+                // Create event data and save to storage
+                var eventData = new EventData
                 {
-                    Debug.LogError("Lobby not found or no members available.");
-                    return new Response<LobbyData>(null, "Lobby not found or no members available.");
-                }
+                    eventName = eventName,
+                    leaderboardId = leaderboardId,
+                    startTime = startTime,
+                    endTime = endTime,
+                    isActive = true
+                };
+                
+                await Storage.Create<ServiceDataStorage, EventData>(eventData);
 
-                // Filter out the current host from potential new hosts
-                var potentialNewHosts = lobbyData.memberIds.FindAll(memberId => memberId != lobbyData.hostId);
-
-                if (potentialNewHosts.Count == 0)
-                {
-                    Debug.LogWarning("No other members available to assign as host.");
-                    return new Response<LobbyData>(null, "No other members available to assign as host.");
-                }
-
-                // Select the first available member as the new host
-                var newHostId = potentialNewHosts[0]; // Could add additional logic for selecting the new host
-
-                // Update the lobby with the new host
-                lobbyData.hostId = newHostId;
-
-                // Save the updated lobby data
-                await Storage.Update(lobbyData.Id, lobbyData);
-                Debug.Log($"New host for lobby {lobbyName} is {newHostId}");
-
-                // Return the updated lobby data
-                return new Response<LobbyData>(lobbyData);
+                Debug.Log($"Event '{eventName}' created with leaderboard '{leaderboardId}'");
+                return new Response<EventData>(eventData);
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
-                return new Response<LobbyData>(null, "Error changing host");
+                Debug.LogError($"Error creating event: {e.Message}");
+                return new Response<EventData>(null, "Error creating event");
             }
         }
 
-        
-        // Method to create a new lobby with a unique name
         [ClientCallable]
-        public async Promise<Response<LobbyData>> CreateLobby(string lobbyName, long hostId)
-        {
-            Debug.Log("In create lobby");
-
-            // Check if a lobby with the same name already exists
-            var existingLobby = await Storage.GetByFieldName<LobbyData, string>("lobbyName", lobbyName);
-            if (existingLobby != null)
-            {
-                Debug.Log($"Lobby with name {lobbyName} already exists.");
-                return new Response<LobbyData>(null, "Lobby with this name already exists");
-            }
-
-            // Create a new lobby object
-            var lobbyData = new LobbyData
-            {
-                lobbyName = lobbyName,
-                hostId = hostId,
-                memberIds = new List<long> { hostId } // Add host as the first member
-            };
-            Debug.Log("Created lobby object");
-
-            try
-            {
-                await Storage.Create<ServiceDataStorage, LobbyData>(lobbyData);
-                return new Response<LobbyData>(lobbyData);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
-                return new Response<LobbyData>(null, "Error creating lobby");
-            }
-        }
-
-        // Method to get a lobby by lobby name
-        [ClientCallable]
-        public async Promise<Response<LobbyData>> GetLobby(string lobbyName)
+        public async Task<Response<bool>> SubmitScore(string eventId, double score)
         {
             try
             {
-                var lobbyData = await Storage.GetByFieldName<LobbyData, string>("lobbyName", lobbyName);
-                return lobbyData == null ? new Response<LobbyData>(null, "Lobby not found") : new Response<LobbyData>(lobbyData);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
-                return new Response<LobbyData>(null, "Error retrieving lobby");
-            }
-        }
-
-        // Method to add a member to the lobby by lobby name, ensuring no duplicates
-        [ClientCallable]
-        public async Promise<Response<bool>> AddMemberToLobby(string lobbyName, long memberId)
-        {
-            try
-            {
-                // Retrieve the lobby by its name
-                var lobbyData = await Storage.GetByFieldName<LobbyData, string>("lobbyName", lobbyName);
-                if (lobbyData == null)
-                    return new Response<bool>(false, "Lobby not found");
-
-                // Check if the member is already in the lobby
-                if (!lobbyData.memberIds.Contains(memberId))
+                var eventData = await Storage.Get<ServiceDataStorage, EventData>(eventId);
+                if (eventData is not { isActive: true })
                 {
-                    // Add the new member and update the lobby
-                    lobbyData.memberIds.Add(memberId);
-                    await Storage.Update(lobbyData.Id, lobbyData);
-                    Debug.Log($"Added member {memberId} to lobby {lobbyName}");
-                }
-                else
-                {
-                    Debug.Log($"Member {memberId} is already in the lobby {lobbyName}");
-                    return new Response<bool>(false, $"Member {memberId} is already in the lobby {lobbyName}");
+                    Debug.LogError("Event not found or not active.");
+                    return new Response<bool>(false, "Event not found or not active.");
                 }
 
+                // Submit score to the event's leaderboard
+                await Services.Leaderboards.SetScore(eventData.leaderboardId, score);
+                Debug.Log($"Score {score} submitted to leaderboard '{eventData.leaderboardId}'");
                 return new Response<bool>(true);
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
-                return new Response<bool>(false, "Error adding member to lobby");
+                Debug.LogError($"Error submitting score: {e.Message}");
+                return new Response<bool>(false, "Error submitting score");
             }
         }
 
-        // Method to set a new host by lobby name
         [ClientCallable]
-        public async Promise<Response<bool>> SetHost(string lobbyName, long newHostId)
+        public async Task<Response<EventData>> CheckEventStatus(string eventId)
         {
             try
             {
-                // Retrieve the lobby by its name
-                var lobbyData = await Storage.GetByFieldName<LobbyData, string>("lobbyName", lobbyName);
-                if (lobbyData == null)
-                    return new Response<bool>(false, "Lobby not found");
+                var eventData = await Storage.Get<ServiceDataStorage, EventData>(eventId);
+                if (eventData == null)
+                {
+                    return new Response<EventData>(null, "Event not found");
+                }
 
-                // Set the new host and update the lobby
-                lobbyData.hostId = newHostId;
-                await Storage.Update(lobbyData.Id, lobbyData);
-                Debug.Log($"Host of lobby {lobbyName} set to {newHostId}");
+                // Check if event has ended and mark as inactive if necessary
+                if (DateTime.UtcNow < eventData.endTime || !eventData.isActive)
+                    return new Response<EventData>(eventData);
+                
+                eventData.isActive = false;
+                await Storage.Update(eventData.Id, eventData);
+                Debug.Log($"Event '{eventData.eventName}' marked as inactive.");
 
+                return new Response<EventData>(eventData);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error checking event status: {e.Message}");
+                return new Response<EventData>(null, "Error checking event status");
+            }
+        }
+
+        [ClientCallable]
+        public async Task<Response<bool>> ClaimReward(string eventId, string itemRef, string itemAmountProperty, long amount)
+        {
+            try
+            {
+                var eventData = await Storage.Get<ServiceDataStorage, EventData>(eventId);
+                if (eventData == null || eventData.isActive)
+                {
+                    return new Response<bool>(false, "Event not found or still active.");
+                }
+
+                // Reward logic based on leaderboard rank or score can be implemented here
+                var itemProperties = new Dictionary<string, string>
+                {
+                    { itemAmountProperty, amount.ToString() }
+                };
+                await Services.Inventory.AddItem(itemRef, itemProperties);
+                Debug.Log($"Reward claimed for event '{eventData.eventName}'");
                 return new Response<bool>(true);
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
-                return new Response<bool>(false, "Error setting host");
+                Debug.LogError($"Error claiming reward: {e.Message}");
+                return new Response<bool>(false, "Error claiming reward");
+            }
+        }
+
+        [ClientCallable]
+        public async Task<Response<EventData>> GetActiveEvent(string eventId)
+        {
+            try
+            {
+                var eventData = await Storage.GetByFieldName<EventData, bool>("isActive", true);
+                
+                return new Response<EventData>(eventData);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error retrieving active events: {e.Message}");
+                return new Response<EventData>(null, "Error getting active event");
             }
         }
     }
