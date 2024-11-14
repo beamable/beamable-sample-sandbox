@@ -30,10 +30,37 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the ListAllPlayers method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.ListAllPlayers"/>
+        /// </summary>
+        public Beamable.Common.Promise<System.Collections.Generic.List<string>> ListAllPlayers()
+        {
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            return this.Request<System.Collections.Generic.List<string>>("Service", "ListAllPlayers", serializedFields);
+        }
+        
+        /// <summary>
+        /// Call the DeleteAccount method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.DeleteAccount"/>
+        /// </summary>
+        public Beamable.Common.Promise<string> DeleteAccount(string accountId)
+        {
+            object raw_accountId = accountId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("accountId", raw_accountId);
+            return this.Request<string>("Service", "DeleteAccount", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]
