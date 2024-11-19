@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d7407dfdf284fd8a0b044a22c00777b, type: 3}
-  m_Name: HP
+  m_Script: {fileID: 11500000, guid: 2cc505896f984fe7845d3c4c58c12cd0, type: 3}
+  m_Name: ItemGrade
   m_EditorClassIdentifier: 
-  Reward:
-    RewardName: HP
-    Quantity: 5
+  GradeName: item grade

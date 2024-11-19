@@ -17,10 +17,22 @@ MonoBehaviour:
   Name: Season 1
   Tiers:
   - Level: 1
-    Rewards:
-    - {fileID: 11400000, guid: 30edbada091d8ca4892007cd0c9db7b6, type: 2}
-    - {fileID: 11400000, guid: ce70453e8056b0a418c01c8a56d206fe, type: 2}
-  - Level: 3
-    Rewards:
-    - {fileID: 11400000, guid: 30edbada091d8ca4892007cd0c9db7b6, type: 2}
-    - {fileID: 11400000, guid: ce70453e8056b0a418c01c8a56d206fe, type: 2}
+    Tasks:
+    - TaskTitle: TaskTitle
+      TaskDescription: description
+      CheckedValue: 1
+      TaskRewards:
+      - RewardName: Reward test
+        Quantity: 1
+        ResourceData: {fileID: 11400000, guid: 5b44526ca82e46f4aaa8ad16fbd278ce, type: 2}
+        ItemResourceData: {fileID: 11400000, guid: 20c684c54488f214ab3b7dccd84c6354, type: 2}
+        Skin: {fileID: 11400000, guid: 2a1df0dfc8aad1445a64a802747c90de, type: 2}
+        EquipmentResourceData: {fileID: 11400000, guid: 1804a4e91b0fbc34f854fe051efe4b39, type: 2}
+        EquipmentRewardGrade: 2
+      - RewardName: Reward test
+        Quantity: 1
+        ResourceData: {fileID: 11400000, guid: 5b44526ca82e46f4aaa8ad16fbd278ce, type: 2}
+        ItemResourceData: {fileID: 11400000, guid: 20c684c54488f214ab3b7dccd84c6354, type: 2}
+        Skin: {fileID: 11400000, guid: 2a1df0dfc8aad1445a64a802747c90de, type: 2}
+        EquipmentResourceData: {fileID: 11400000, guid: 1804a4e91b0fbc34f854fe051efe4b39, type: 2}
+        EquipmentRewardGrade: 3

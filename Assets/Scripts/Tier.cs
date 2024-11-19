@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using ScriptableObjects;
 
 namespace DefaultNamespace
 {
@@ -8,6 +7,6 @@ namespace DefaultNamespace
     public class Tier
     {
         public int Level;
-        public List<RewardScriptableObject> Rewards; 
+        public List<SeasonalTaskData> Tasks; 
     }
 }

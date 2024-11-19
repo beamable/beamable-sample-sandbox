@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Beamable;
 using Beamable.Common.Content;
@@ -12,12 +10,12 @@ public class BattlepassManager : MonoBehaviour
 {
     [SerializeField] private ContentRef<Battlepass> battlepassRef;
     private Battlepass _battlepass;
-    private ServiceClient _service;
 
     private async void Start()
     {
-        _service = new ServiceClient();
-        
+        var beamContext = await BeamContext.Default.Instance;
+        Debug.Log("start" + beamContext.PlayerId);
+
         // Fetch the Battlepass content
         await battlepassRef.Resolve()
             .Then(content =>
@@ -25,6 +23,7 @@ public class BattlepassManager : MonoBehaviour
                 _battlepass = content;
                 Debug.Log($"Fetched Battlepass: {_battlepass.Name}");
                 DisplayBattlepassDetails();
+                TestSeasonalTaskRewardItemSerialization();
             })
             .Error(_ =>
             {
@@ -38,33 +37,85 @@ public class BattlepassManager : MonoBehaviour
         foreach (var tier in _battlepass.Tiers)
         {
             Debug.Log($"Tier {tier.Level}");
-            foreach (var reward in tier.Rewards)
+            foreach (var task in tier.Tasks)
             {
-                Debug.Log($"  Reward: {reward.rewardName}, Quantity: {reward.quantity}");
+                Debug.Log($"  Task: {task.TaskTitle}");
+                Debug.Log($"    Description: {task.TaskDescription}");
+                Debug.Log($"    Checked Value: {task.CheckedValue}");
+                foreach (var reward in task.TaskRewards)
+                {
+                    DisplayRewardDetails(reward);
+                }
             }
         }
     }
 
-    // Trigger reward claim on button press
-    public async void ClaimRewardButton()
+    private void DisplayRewardDetails(SeasonalTaskRewardItem reward)
     {
-        await TryClaimReward(1);
+        Debug.Log($"    Reward Name: {reward.RewardName}");
+        Debug.Log($"    Quantity: {reward.Quantity}");
+
+        if (reward.ResourceData != null)
+        {
+            Debug.Log($"      Resource Name: {reward.ResourceData.resourceName}");
+            Debug.Log($"      Resource Value: {reward.ResourceData.resourceValue}");
+        }
+
+        if (reward.ItemResourceData != null)
+        {
+            Debug.Log($"      Item Name: {reward.ItemResourceData.itemName}");
+            Debug.Log($"      Item Description: {reward.ItemResourceData.itemDescription}");
+        }
+
+        if (reward.Skin != null)
+        {
+            Debug.Log($"      Skin Name: {reward.Skin.SkinName}");
+        }
+
+        if (reward.EquipmentResourceData != null)
+        {
+            Debug.Log($"      Equipment Resource Name: {reward.EquipmentResourceData.ResourceName}");
+            Debug.Log($"      Equipment Resource Amount: {reward.EquipmentResourceData.ResourceAmount}");
+        }
+
+        Debug.Log($"      Equipment Reward Grade: {reward.EquipmentRewardGrade}");
     }
 
-    private async Task TryClaimReward(int tierLevel)
+    private void TestSeasonalTaskRewardItemSerialization()
     {
-        Debug.Log($"Attempting to claim reward for Tier {tierLevel}...");
-        
-        // Call the service to check eligibility and claim the reward
-        var result = await _service.ClaimReward(tierLevel);
-        
-        if (result == "Success")
+        Debug.Log("Testing serialization for SeasonalTaskRewardItem...");
+
+        // Create a sample reward structure
+        var sampleReward = new SeasonalTaskRewardItem
         {
-            Debug.Log("Reward claimed successfully.");
+            RewardName = "Test Reward",
+            Quantity = 1,
+            ResourceData = new ResourceData { resourceName = "Gold", resourceValue = 100 },
+            ItemResourceData = new ItemResourceData { itemName = "Sword", itemDescription = "A sharp blade" },
+            Skin = ScriptableObject.CreateInstance<SkinDataSO>(),
+            EquipmentResourceData = ScriptableObject.CreateInstance<EquipmentResourceData>(),
+            EquipmentRewardGrade = ItemGradeEnums.Legendary
+        };
+
+        // Set properties for ScriptableObjects
+        sampleReward.Skin.SkinName = "Hero Skin";
+        sampleReward.EquipmentResourceData.ResourceName = "Armor";
+        sampleReward.EquipmentResourceData.ResourceAmount = 1;
+
+        // Simulate serialization and deserialization
+        try
+        {
+            string json = JsonUtility.ToJson(sampleReward, true); // Serialize to JSON
+            Debug.Log($"Serialized SeasonalTaskRewardItem: {json}");
+
+            var deserializedReward = JsonUtility.FromJson<SeasonalTaskRewardItem>(json); // Deserialize back
+            Debug.Log("Deserialization successful!");
+            Debug.Log($"Reward Name: {deserializedReward.RewardName}, Quantity: {deserializedReward.Quantity}");
         }
-        else
+        catch (System.Exception ex)
         {
-            Debug.Log(result);  // Log the error message from the service
+            Debug.LogError($"Exception during serialization test: {ex.Message}");
         }
     }
+
 }

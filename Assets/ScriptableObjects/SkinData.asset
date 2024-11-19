@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d7407dfdf284fd8a0b044a22c00777b, type: 3}
-  m_Name: HP
+  m_Script: {fileID: 11500000, guid: b93c08c10ffc4ca5968ee817c89f5770, type: 3}
+  m_Name: SkinData
   m_EditorClassIdentifier: 
-  Reward:
-    RewardName: HP
-    Quantity: 5
+  SkinName: Skin Data

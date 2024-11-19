@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d7407dfdf284fd8a0b044a22c00777b, type: 3}
   m_Name: Coins
   m_EditorClassIdentifier: 
-  rewardName: Coins
-  quantity: 100
+  Reward:
+    RewardName: Reward
+    Quantity: 1
