@@ -10,6 +10,8 @@ public class DeleteAccounts : MonoBehaviour
     async void Start()
     {
         _beamContext = await BeamContext.Default.Instance;
+        var result = await _beamContext.Accounts.AddDeviceId();
+        Debug.Log($"isSuccess: {result.isSuccess}");
 
         Debug.Log($"Current PlayerId: {_beamContext.PlayerId}");
         Debug.Log($"Cid: {_beamContext.Cid}");
