@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Beamable.Common.Api.Groups;
 using Beamable.Server;
+using UnityEngine;
 
 namespace Beamable.Microservices
 {
@@ -10,17 +11,19 @@ namespace Beamable.Microservices
     public class Service : Microservice
     {
         [ClientCallable]
-        public async Task ResetStats(string statKey)
+        public async Task SetIsVipStat(long playerId)
         {
-            const string access = "public";
-            const string newValue = "1";
-            
-            Dictionary<string, string> resetStats = new Dictionary<string, string>() 
+            string statKey = "is_vip";
+            string access = "public";
+            string newValue = "true";
+
+            Dictionary<string, string> stats = new Dictionary<string, string>
             {
                 { statKey, newValue }
             };
 
-            await Services.Stats.SetStats(access, resetStats);
+            await Services.Stats.SetStats(access, stats);
+            Debug.Log($"Updated '{statKey}' for Player {playerId}.");
         }
         
     }

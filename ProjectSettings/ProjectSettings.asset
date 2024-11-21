@@ -828,6 +828,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
+    Android: BEAMABLE_PURCHASING
     Standalone: BEAMABLE_PURCHASING
   additionalCompilerArguments: {}
   platformArchitecture: {}

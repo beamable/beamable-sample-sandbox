@@ -32,15 +32,15 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the ResetStats method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.ResetStats"/>
+        /// Call the SetIsVipStat method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.SetIsVipStat"/>
         /// </summary>
-        public Beamable.Common.Promise<System.Threading.Tasks.Task> ResetStats(string statKey)
+        public Beamable.Common.Promise<System.Threading.Tasks.Task> SetIsVipStat(long playerId)
         {
-            object raw_statKey = statKey;
+            object raw_playerId = playerId;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("statKey", raw_statKey);
-            return this.Request<System.Threading.Tasks.Task>("Service", "ResetStats", serializedFields);
+            serializedFields.Add("playerId", raw_playerId);
+            return this.Request<System.Threading.Tasks.Task>("Service", "SetIsVipStat", serializedFields);
         }
     }
     
@@ -48,7 +48,7 @@ namespace Beamable.Server.Clients
     {
         
         [System.SerializableAttribute()]
-        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
+        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
         {
         }
     }

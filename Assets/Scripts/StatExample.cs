@@ -1,43 +1,49 @@
-using System.Collections;
 using System.Collections.Generic;
 using Beamable;
-using UnityEngine;
 using Beamable.Server.Clients;
+using UnityEngine;
 
 public class StatExample : MonoBehaviour
 {
+    private BeamContext _context;
     private ServiceClient _service;
 
-    //  Unity Methods  --------------------------------
-    protected void Start()
+    private const string StatKey = "is_vip";
+    private const string Access = "public";
+    private const string Domain = "client";
+    private const string Type = "player";
+
+    private async void Start()
     {
+        _context = await BeamContext.Default.Instance;
         _service = new ServiceClient();
 
-        SetupBeamable();
+        Debug.Log($"Player ID: {_context.PlayerId}");
+        
+        await _service.SetIsVipStat(_context.PlayerId);
+        Debug.Log("Stat updated using service.");
+
+        GetStats();
+
+        var setStats = new Dictionary<string, string> { { StatKey, "false" } };
+        await _context.Api.StatsService.SetStats(Access, setStats);
+        Debug.Log("Stat updated using client.");
+        
+        GetStats();
+
     }
 
-    private async void SetupBeamable()
+    private async void GetStats()
     {
-        var context = BeamContext.Default;
-        await context.OnReady;
+        Dictionary<string, string> fetchedStats = await _context.Api.StatsService.GetStats(Domain, Access, Type, _context.PlayerId);
 
-        Debug.Log($"context.PlayerId = {context.PlayerId}");
-
-        string statKey = "MyExampleStat";
-        string access = "public";
-        string domain = "client";
-        string type = "player";
-        long id = context.PlayerId;
-
-        await _service.ResetStats(statKey);
-
-        // Get Value
-        Dictionary<string, string> getStats =
-            await context.Api.StatsService.GetStats(domain, access, type, id);
-
-        string myExampleStatValue = "";
-        getStats.TryGetValue(statKey, out myExampleStatValue);
-
-        Debug.Log($"myExampleStatValue = {myExampleStatValue}");
+        if (fetchedStats.TryGetValue(StatKey, out string fetchedValue))
+        {
+            Debug.Log($"Fetched stat value: {fetchedValue}");
+        }
+        else
+        {
+            Debug.Log($"Stat '{StatKey}' not found.");
+        }
     }
 }
