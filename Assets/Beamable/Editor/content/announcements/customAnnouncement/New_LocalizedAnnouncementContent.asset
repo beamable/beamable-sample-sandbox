@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea8a08b582eb43899723e049bdc5e63a, type: 3}
+  m_Name: New_LocalizedAnnouncementContent
+  m_EditorClassIdentifier: 
+  _tags:
+  - base
+  channel: channel example`
+  title: title example
+  summary: summary example
+  body: body example
+  startDate:
+    HasValue: 0
+    Value: 2024-11-26T10:51:33Z
+  endDate:
+    HasValue: 0
+    Value: 2024-11-26T10:51:33Z
+  attachments: []
+  gift:
+    description:
+      HasValue: 0
+      Value: 
+    currencies:
+      HasValue: 0
+      Value:
+        listData: []
+    items:
+      HasValue: 0
+      Value:
+        listData: []
+    applyVipBonus:
+      HasValue: 0
+      Value: 0
+    webhooks:
+      HasValue: 0
+      Value:
+        listData: []
+  statRequirements:
+    HasValue: 0
+    Value: []
+  clientData:
+    HasValue: 0
+    Value:
+      keys: []
+      values: []
+  AnnouncementImage:
+    m_AssetGUID: f819a6beb22c04c8d9f8222f930252b5
+    m_SubObjectName: icon
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_EditorAssetChanged: 1
+  LocalizedTextKey: lalalala
