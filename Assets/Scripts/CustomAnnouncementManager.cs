@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class CustomAnnouncementManager : MonoBehaviour
 {
+    [SerializeField] private ContentRef<LocalizedAnnouncementContent> _customAnnouncementRef;
+    private LocalizedAnnouncementContent _customAnnouncement;
+
     private BeamContext _beamContext;
 
     private async void Start()
@@ -16,53 +19,35 @@ public class CustomAnnouncementManager : MonoBehaviour
 
         Debug.Log($"Player ID: {_beamContext.PlayerId}");
 
-        // Retrieve default announcements
-        var announcements = await GetAnnouncements();
-        PrintAnnouncements(announcements);
+        // Fetch the custom announcement content
+        await _customAnnouncementRef.Resolve()
+            .Then(content =>
+            {
+                _customAnnouncement = content;
+                Debug.Log("Fetched Custom Announcement");
+                DisplayCustomAnnouncementDetails();
+            })
+            .Error(ex =>
+            {
+                Debug.LogError("Failed to fetch the custom announcement content: " + ex.Message);
+            });
 
-        // Retrieve custom announcements
-        var customAnnouncements = await GetCustomAnnouncements();
-        PrintCustomAnnouncements(customAnnouncements);
-
-        // Example: Mark the first default announcement as read
-        if (announcements.Count > 0)
+        // Retrieve the associated AnnouncementView
+        var announcementViews = await GetAllAnnouncements();
+        foreach (var view in announcementViews)
         {
-            await MarkAnnouncementAsRead(announcements[0].id);
+            if (view.title == _customAnnouncement.title)
+            {
+                Debug.Log("Custom announcement found in AnnouncementView");
+                await MarkAnnouncementAsRead(view.id);
+            }
         }
     }
 
-    private async Task<List<AnnouncementView>> GetAnnouncements()
+    private async Task<List<AnnouncementView>> GetAllAnnouncements()
     {
         var response = await _beamContext.Api.AnnouncementService.GetCurrent();
         return response?.announcements ?? new List<AnnouncementView>();
-    }
-
-    private void PrintAnnouncements(List<AnnouncementView> announcements)
-    {
-        foreach (var announcement in announcements)
-        {
-            Debug.Log($"Title: {announcement.title}");
-            Debug.Log($"Body: {announcement.body}");
-            Debug.Log($"Is Read: {announcement.isRead}");
-            Debug.Log($"Has Claims Available: {announcement.HasClaimsAvailable()}");
-        }
-    }
-
-    private async Task<List<LocalizedAnnouncementContent>> GetCustomAnnouncements()
-    {
-        // Example of retrieving custom announcements from Beamable's content service
-        var customAnnouncementRef = new ContentRef<LocalizedAnnouncementContent>("customAnnouncement");
-        var customAnnouncement = await customAnnouncementRef.Resolve();
-
-        return new List<LocalizedAnnouncementContent> { customAnnouncement }; // Adapt as needed
-    }
-
-    private void PrintCustomAnnouncements(List<LocalizedAnnouncementContent> customAnnouncements)
-    {
-        foreach (var customAnnouncement in customAnnouncements)
-        {
-            Debug.Log($"Custom Field: {customAnnouncement.AnnouncementImage}");
-        }
     }
 
     private async Task MarkAnnouncementAsRead(string announcementId)
@@ -78,16 +63,17 @@ public class CustomAnnouncementManager : MonoBehaviour
         }
     }
 
-    private async Task ClaimAnnouncementReward(string announcementId)
+    private void DisplayCustomAnnouncementDetails()
     {
-        try
+        if (_customAnnouncement == null)
         {
-            await _beamContext.Api.AnnouncementService.Claim(announcementId);
-            Debug.Log($"Claimed rewards for announcement {announcementId}.");
+            Debug.LogWarning("No custom announcement to display.");
+            return;
         }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Failed to claim rewards: {ex.Message}");
-        }
+
+        Debug.Log($"Title: {_customAnnouncement.title}");
+        Debug.Log($"Body: {_customAnnouncement.body}");
+        Debug.Log($"Custom Image: {_customAnnouncement.AnnouncementImage}");
+        Debug.Log($"Localized Text Key: {_customAnnouncement.LocalizedTextKey}");
     }
 }

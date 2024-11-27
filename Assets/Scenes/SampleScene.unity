@@ -353,3 +353,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09821de5ba7a482a9c29f6120de5dfb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _customAnnouncementRef:
+    Id: announcements.customAnnouncement.New_LocalizedAnnouncementContent1
