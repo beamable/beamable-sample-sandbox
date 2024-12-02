@@ -18,19 +18,28 @@ public class StatExample : MonoBehaviour
     private async void Start()
     {
         // // Use BeamEditorContext for admin access
-        // _adminContext = BeamEditorContext.Default;
+        _adminContext = BeamEditorContext.Default;
         _beamContext = await BeamContext.Default.Instance;
-        // _service = new ServiceClient();
-        //
+        _service = new ServiceClient();
+        
         Debug.Log($"Player id: {_beamContext.PlayerId}");
-        // Debug.Log($"Admin Context Player ID: {_adminContext.CurrentUser.id}");
-        //
-        // // Get initial stats
-        // GetStats();
-        //
-        // // Call the microservice as an admin
-        // await _service.SetIsVipStat(_adminContext.CurrentUser.id);
-        // Debug.Log("Stat updated using admin service.");
+        Debug.Log($"Admin Context Player ID: {_adminContext.EditorAccount.cid}");
+        
+        // Get initial stats
+        GetStats();
+        
+        // if (long.TryParse(_adminContext.EditorAccount.cid, out long adminPlayerId))
+        // {
+        //     // Call the microservice as an admin
+        //     Debug.Log(adminPlayerId);
+        //     await _service.SetIsVipStat(adminPlayerId);
+        //     Debug.Log("Stat updated using admin service.");
+        // }
+        // else
+        // {
+        //     Debug.LogError($"Failed to convert CID '{_adminContext.EditorAccount.cid}' to long.");
+        // }
+
 
         // Get updated stats
         GetStats();
@@ -55,9 +64,27 @@ public class StatExample : MonoBehaviour
     {
         var editorContext = BeamEditorContext.Default;
         var service = new ServiceClient();
-
-
+    
+    
         await service.SetIsVipStat(1811038189543425);
         Debug.Log($"Stat updated for Player ID: {1811038189543425}");
+
+    }
+    
+    [MenuItem("Beamable/Admin/Set VIP Stat 2")]
+    public static async void SetVipStat2()
+    {
+        var editorContext = BeamEditorContext.Default;
+
+        if (long.TryParse(editorContext.EditorAccount.cid, out long adminPlayerId))
+        {
+            var service = new ServiceClient();
+            await service.SetIsVipStat(1811038189543425);
+            Debug.Log($"Stat updated for Player ID: {adminPlayerId}");
+        }
+        else
+        {
+            Debug.LogError("Failed to parse Editor Account CID to long.");
+        }
     }
 }
