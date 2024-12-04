@@ -10,81 +10,117 @@ public class StatExample : MonoBehaviour
     private BeamContext _beamContext;
     private ServiceClient _service;
 
-    private const string StatKey = "is_vip";
+    private const string StatKey = "vip_flag";
     private const string Access = "public";
     private const string Domain = "client";
     private const string Type = "player";
 
     private async void Start()
     {
-        // // Use BeamEditorContext for admin access
-        _adminContext = BeamEditorContext.Default;
-        _beamContext = await BeamContext.Default.Instance;
-        _service = new ServiceClient();
-        
-        Debug.Log($"Player id: {_beamContext.PlayerId}");
-        Debug.Log($"Admin Context Player ID: {_adminContext.EditorAccount.cid}");
-        
-        // Get initial stats
-        GetStats();
-        
-        // if (long.TryParse(_adminContext.EditorAccount.cid, out long adminPlayerId))
-        // {
-        //     // Call the microservice as an admin
-        //     Debug.Log(adminPlayerId);
-        //     await _service.SetIsVipStat(adminPlayerId);
-        //     Debug.Log("Stat updated using admin service.");
-        // }
-        // else
-        // {
-        //     Debug.LogError($"Failed to convert CID '{_adminContext.EditorAccount.cid}' to long.");
-        // }
+        try
+        {
+            Debug.Log("Initializing Admin Context...");
+            _adminContext = BeamEditorContext.Default;
 
+            if (_adminContext == null)
+            {
+                Debug.LogError("Failed to initialize BeamEditorContext.Default.");
+                return;
+            }
 
-        // Get updated stats
-        GetStats();
+            Debug.Log("Admin Context successfully initialized.");
+            Debug.Log($"Admin Context Player ID: {_adminContext.EditorAccount.cid}");
+
+            Debug.Log("Creating in-game context...");
+            _beamContext = _adminContext.CreateIngameContext("admin");
+
+            if (_beamContext == null)
+            {
+                Debug.LogError("Failed to create in-game context.");
+                return;
+            }
+
+            Debug.Log("In-game context successfully created.");
+            Debug.Log($"In-game context Player ID: {_beamContext.PlayerId}");
+
+            Debug.Log("Initializing Service Client...");
+            _service = _beamContext.Microservices().Service();
+
+            if (_service == null)
+            {
+                Debug.LogError("Failed to initialize Service Client.");
+                return;
+            }
+
+            Debug.Log("Service Client successfully initialized.");
+
+            Debug.Log("Fetching initial stats...");
+            await GetStats();
+
+            Debug.Log("Setting VIP stat via admin service...");
+            await _service.SetIsVipStat(1813407203940353); // Validate this player ID
+            Debug.Log("Stat updated using admin service.");
+
+            Debug.Log("Fetching updated stats...");
+            await GetStats();
+        }
+        catch (System.ArgumentOutOfRangeException ex)
+        {
+            Debug.LogError($"Argument out of range: {ex.Message} - Parameter: {ex.ParamName}");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Error during stat operation: {ex.Message}");
+        }
     }
 
-    private async void GetStats()
+
+
+
+
+    private async System.Threading.Tasks.Task GetStats()
     {
-        Dictionary<string, string> fetchedStats = await _beamContext.Api.StatsService.GetStats(Domain, Access, Type, _beamContext.PlayerId);
+        try
+        {
+            Debug.Log($"Getting stats for {_beamContext.PlayerId}");
+            Dictionary<string, string> fetchedStats = await _beamContext.Api.StatsService.GetStats(Domain, Access, Type, _beamContext.PlayerId);
 
-        if (fetchedStats.TryGetValue(StatKey, out string fetchedValue))
-        {
-            Debug.Log($"Fetched stat value: {fetchedValue}");
+            if (fetchedStats.TryGetValue(StatKey, out string fetchedValue))
+            {
+                Debug.Log($"Fetched stat value: {fetchedValue}");
+            }
+            else
+            {
+                Debug.Log($"Stat '{StatKey}' not found.");
+            }
         }
-        else
+        catch (System.Exception ex)
         {
-            Debug.Log($"Stat '{StatKey}' not found.");
+            Debug.LogError($"Error fetching stats: {ex.Message}");
         }
     }
-    
+
     [MenuItem("Beamable/Admin/Set VIP Stat")]
     public static async void SetVipStat()
     {
-        var editorContext = BeamEditorContext.Default;
-        var service = new ServiceClient();
-    
-    
-        await service.SetIsVipStat(1811038189543425);
-        Debug.Log($"Stat updated for Player ID: {1811038189543425}");
-
-    }
-    
-    [MenuItem("Beamable/Admin/Set VIP Stat 2")]
-    public static async void SetVipStat2()
-    {
-        var editorContext = BeamEditorContext.Default;
-
-        if (long.TryParse(editorContext.EditorAccount.cid, out long adminPlayerId))
+        try
         {
-            var service = new ServiceClient();
-            await service.SetIsVipStat(1811038189543425);
-            Debug.Log($"Stat updated for Player ID: {adminPlayerId}");
+            // Use BeamEditorContext for admin scope
+            var editorContext = BeamEditorContext.Default;
+
+            // Use the helper to create an in-game context based on admin context
+            var beamContext = editorContext.CreateIngameContext();
+            var service = beamContext.Microservices().Service();
+
+            // Example player ID
+            long playerId = 1813407203940353;
+            await service.SetIsVipStat(playerId);
+
+            Debug.Log($"Stat updated for Player ID: {playerId}");
         }
-        else
+        catch (System.Exception ex)
         {
-            Debug.LogError("Failed to parse Editor Account CID to long.");
+            Debug.LogError($"Error in MenuItem call: {ex.Message}");
         }
     }
 }
