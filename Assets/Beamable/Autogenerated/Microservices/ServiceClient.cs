@@ -30,10 +30,41 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the purchase_virtual_listing method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.purchase_virtual_listing"/>
+        /// </summary>
+        public Beamable.Common.Promise<Beamable.Common.MicroserviceResponses.PURCHASE_VIRTUAL_LISTING_RESPONSE> purchase_virtual_listing(Beamable.Common.Shop.PURCHASE_VIRTUAL_LISTING_PARAMETERS purchase_params, string transaction_guid, long UserId)
+        {
+            object raw_purchase_params = purchase_params;
+            object raw_transaction_guid = transaction_guid;
+            object raw_UserId = UserId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("purchase_params", raw_purchase_params);
+            serializedFields.Add("transaction_guid", raw_transaction_guid);
+            serializedFields.Add("UserId", raw_UserId);
+            return this.Request<Beamable.Common.MicroserviceResponses.PURCHASE_VIRTUAL_LISTING_RESPONSE>("Service", "purchase_virtual_listing", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterBeamable_Common_Shop_PURCHASE_VIRTUAL_LISTING_PARAMETERS : MicroserviceClientDataWrapper<Beamable.Common.Shop.PURCHASE_VIRTUAL_LISTING_PARAMETERS>
+        {
+        }
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
+        {
+        }
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]

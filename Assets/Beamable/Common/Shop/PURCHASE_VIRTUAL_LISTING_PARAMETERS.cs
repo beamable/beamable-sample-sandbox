@@ -28,7 +28,7 @@ namespace Beamable.Common.Shop
 
     public static class ITEMS
     {
-        public const string TRANSACTIONS_ID = "transactions";
+        public const string TRANSACTIONS_ID = "transaction_content.transactions";
         public const string ACHIEVEMENTS_ID = "achievements";
         public const string NUM_ITEMS_KEY = "num_items";
     }
