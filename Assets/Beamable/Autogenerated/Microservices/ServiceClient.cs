@@ -44,6 +44,20 @@ namespace Beamable.Server.Clients
             serializedFields.Add("groupId", raw_groupId);
             return this.Request<bool>("Service", "SendGroupInvite", serializedFields);
         }
+        
+        /// <summary>
+        /// Call the AcceptGroupInvite method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.AcceptGroupInvite"/>
+        /// </summary>
+        public Beamable.Common.Promise<bool> AcceptGroupInvite(long gamerTag, long groupId)
+        {
+            object raw_gamerTag = gamerTag;
+            object raw_groupId = groupId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("gamerTag", raw_gamerTag);
+            serializedFields.Add("groupId", raw_groupId);
+            return this.Request<bool>("Service", "AcceptGroupInvite", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient

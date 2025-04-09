@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Beamable.Common;
 using Beamable.Common.Api;
-using Beamable.Common.Api.Groups;
 using Beamable.Server;
 using UnityEngine;
 
@@ -17,7 +16,7 @@ namespace Beamable.Microservices
             var request = new GroupInviteRequest
             {
                 gamerTag = gamerTag,
-                subGroup = "", // Or actual value
+                subGroup = "", 
                 useNewRewardsSystem = false
             };
 
@@ -39,6 +38,34 @@ namespace Beamable.Microservices
                 return false;
             }
         }
+
+        [ClientCallable]
+        public async Promise<bool> AcceptGroupInvite(long gamerTag, long groupId)
+        {
+            var joinBody = new GroupJoinRequest
+            {
+                group = groupId
+            };
+
+            try
+            {
+                var result = await Requester.Request(
+                    Method.POST,
+                    $"object/group-users/{gamerTag}/join",
+                    body: joinBody,
+                    parser: s => s
+                );
+
+                Debug.Log("[AcceptGroupInvite] Beamable join group success");
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[AcceptGroupInvite] Beamable join group failed: {e.Message}");
+                return false;
+            }
+        }
+
         [Serializable]
         public class GroupInviteRequest
         {
@@ -47,5 +74,10 @@ namespace Beamable.Microservices
             public bool useNewRewardsSystem;
         }
 
+        [Serializable]
+        public class GroupJoinRequest
+        {
+            public long group;
+        }
     }
 }

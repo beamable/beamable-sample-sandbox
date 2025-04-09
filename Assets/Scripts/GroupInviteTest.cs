@@ -20,14 +20,14 @@ namespace DefaultNamespace
 
         public async void SendGroupInvite()
         {
-            var result = await _serviceClient.SendGroupInvite(1857995730141185, 1864385994612684);
+            var result = await _serviceClient.SendGroupInvite(1865034959694849, 1864385994612684);
             Debug.Log(result);
         }
 
         public async void AcceptGroupInvite()
         {
-            await _beamContext.Api.GroupsService.JoinGroup(1864385994612684);
-            Debug.Log("joined group");
+            var result = await _serviceClient.AcceptGroupInvite(_beamContext.PlayerId, 1864385994612684);
+            Debug.Log(result);
         }
     }
 }

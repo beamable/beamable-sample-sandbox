@@ -155,6 +155,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.DefaultCompany.SampleCodeSandbox
+    Standalone: com.DefaultCompany.Sample-Code-Sandbox
   buildNumber:
     Bratwurst: 0
     Standalone: 0
