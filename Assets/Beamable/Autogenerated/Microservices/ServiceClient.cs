@@ -30,10 +30,29 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the SendGroupInvite method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.SendGroupInvite"/>
+        /// </summary>
+        public Beamable.Common.Promise<bool> SendGroupInvite(long gamerTag, long groupId)
+        {
+            object raw_gamerTag = gamerTag;
+            object raw_groupId = groupId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("gamerTag", raw_gamerTag);
+            serializedFields.Add("groupId", raw_groupId);
+            return this.Request<bool>("Service", "SendGroupInvite", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]
