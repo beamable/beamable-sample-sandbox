@@ -32,25 +32,18 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the SetIsVipStat method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.SetIsVipStat"/>
+        /// Call the SayHi method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.SayHi"/>
         /// </summary>
-        public Beamable.Common.Promise<System.Threading.Tasks.Task> SetIsVipStat(long playerId)
+        public Beamable.Common.Promise<System.Threading.Tasks.Task> SayHi()
         {
-            object raw_playerId = playerId;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("playerId", raw_playerId);
-            return this.Request<System.Threading.Tasks.Task>("Service", "SetIsVipStat", serializedFields);
+            return this.Request<System.Threading.Tasks.Task>("Service", "SayHi", serializedFields);
         }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
-        
-        [System.SerializableAttribute()]
-        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
-        {
-        }
     }
     
     [BeamContextSystemAttribute()]

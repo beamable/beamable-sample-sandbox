@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
 
-public class StatExample : MonoBehaviour
+public class TestAOC : MonoBehaviour
 {
     private BeamEditorContext _adminContext;
     private BeamContext _beamContext;
@@ -54,15 +54,11 @@ public class StatExample : MonoBehaviour
 
             Debug.Log("Service Client successfully initialized.");
 
-            Debug.Log("Fetching initial stats...");
-            await GetStats();
 
-            Debug.Log("Setting VIP stat via admin service...");
-            await _service.SetIsVipStat(1813407203940353); // Validate this player ID
-            Debug.Log("Stat updated using admin service.");
+            Debug.Log("Calling MS");
+            await _service.SayHi();
+            Debug.Log("MS call works");
 
-            Debug.Log("Fetching updated stats...");
-            await GetStats();
         }
         catch (System.ArgumentOutOfRangeException ex)
         {
@@ -74,33 +70,7 @@ public class StatExample : MonoBehaviour
         }
     }
 
-
-
-
-
-    private async System.Threading.Tasks.Task GetStats()
-    {
-        try
-        {
-            Debug.Log($"Getting stats for {_beamContext.PlayerId}");
-            Dictionary<string, string> fetchedStats = await _beamContext.Api.StatsService.GetStats(Domain, Access, Type, _beamContext.PlayerId);
-
-            if (fetchedStats.TryGetValue(StatKey, out string fetchedValue))
-            {
-                Debug.Log($"Fetched stat value: {fetchedValue}");
-            }
-            else
-            {
-                Debug.Log($"Stat '{StatKey}' not found.");
-            }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Error fetching stats: {ex.Message}");
-        }
-    }
-
-    [MenuItem("Beamable/Admin/Set VIP Stat")]
+    [MenuItem("Beamable/Admin/Say Hi")]
     public static async void SetVipStat()
     {
         try
@@ -109,14 +79,12 @@ public class StatExample : MonoBehaviour
             var editorContext = BeamEditorContext.Default;
 
             // Use the helper to create an in-game context based on admin context
-            var beamContext = editorContext.CreateIngameContext();
+            var beamContext = editorContext.CreateIngameContext("adminContextMenu");
             var service = beamContext.Microservices().Service();
 
-            // Example player ID
-            long playerId = 1813407203940353;
-            await service.SetIsVipStat(playerId);
+            await service.SayHi();
 
-            Debug.Log($"Stat updated for Player ID: {playerId}");
+            Debug.Log("MS Said Hi");
         }
         catch (System.Exception ex)
         {
