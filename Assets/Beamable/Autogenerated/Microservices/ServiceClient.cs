@@ -30,10 +30,41 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the SetLeaderboardScore method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.SetLeaderboardScore"/>
+        /// </summary>
+        public Beamable.Common.Promise<bool> SetLeaderboardScore(string leaderboardId, int score, System.Collections.Generic.Dictionary<string, object> leaderboardScores)
+        {
+            object raw_leaderboardId = leaderboardId;
+            object raw_score = score;
+            object raw_leaderboardScores = leaderboardScores;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("leaderboardId", raw_leaderboardId);
+            serializedFields.Add("score", raw_score);
+            serializedFields.Add("leaderboardScores", raw_leaderboardScores);
+            return this.Request<bool>("Service", "SetLeaderboardScore", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_String : MicroserviceClientDataWrapper<string>
+        {
+        }
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Int32 : MicroserviceClientDataWrapper<int>
+        {
+        }
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Collections_Generic_Dictionary_System_String_System_Object : MicroserviceClientDataWrapper<System.Collections.Generic.Dictionary<string, object>>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]
