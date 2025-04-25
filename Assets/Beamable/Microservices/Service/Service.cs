@@ -12,7 +12,7 @@ namespace Beamable.Microservices
     public class Service : Microservice
     {
         [ClientCallable]
-        private async Promise<bool> SetLeaderboardScore(string leaderboardId, int score, Dictionary<string, object> leaderboardScores)
+        private async Promise<bool> SetLeaderboardScore(string leaderboardId, int score, Dictionary<string, object> leaderboardScores = null)
         {
             try
             {
@@ -24,6 +24,13 @@ namespace Beamable.Microservices
                 Debug.LogError($"Failed to add leaderboard entry: {e.Message}");
                 return false;
             }
+        }
+
+        [ClientCallable]
+        private async Task<string> GetLeaderboard()
+        {
+            var leaderboard = await Services.Leaderboards.GetBoard("leaderboards.tcp", 0, 10);
+            return leaderboard.rankgt.ToString();
         }
     }
 }

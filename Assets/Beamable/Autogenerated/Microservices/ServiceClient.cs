@@ -46,6 +46,16 @@ namespace Beamable.Server.Clients
             serializedFields.Add("leaderboardScores", raw_leaderboardScores);
             return this.Request<bool>("Service", "SetLeaderboardScore", serializedFields);
         }
+        
+        /// <summary>
+        /// Call the GetLeaderboard method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.GetLeaderboard"/>
+        /// </summary>
+        public Beamable.Common.Promise<string> GetLeaderboard()
+        {
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            return this.Request<string>("Service", "GetLeaderboard", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
