@@ -829,7 +829,7 @@ PlayerSettings:
   webGLPowerPreference: 2
   scriptingDefineSymbols:
     Android: BEAMABLE_PURCHASING
-    Standalone: BEAMABLE_PURCHASING
+    Standalone: BEAMABLE_PURCHASING;SPEW_ALL
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

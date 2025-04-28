@@ -10,18 +10,13 @@ using UnityEngine;
 public class LeaderboardLoadTest : MonoBehaviour
 { 
     BeamContext _beamContext;
-    ServiceClient _serviceClient;
     private ILeaderboardsApi _lbApi;
 
     private async void Start()
     {
         _beamContext = await BeamContext.Default.Instance;
         _lbApi = _beamContext.ServiceProvider.GetService<ILeaderboardsApi>();
-        var leaderboard = await _lbApi.ObjectGetView("leaderboards.tcp");
-        Debug.Log($"User id: {_beamContext.PlayerId}");
-        Debug.Log($"Leaderboard 0 gt: {leaderboard.lb.rankings[0].gt}");
-        Debug.Log($"Leaderboard rankgt Value: {leaderboard.lb.rankgt.Value}");
-        Debug.Log($"Leaderboard rankgt Value rank: {leaderboard.lb.rankgt.Value.rank}");
-
+        var leaderboard = await _lbApi.ObjectGetRanks(_beamContext.PlayerId.ToString(), "leaderboards.id");
+        Debug.Log($"Current Player Rank: {leaderboard.lb.rankings[0].rank}");
     }
 }
