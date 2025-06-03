@@ -30,10 +30,27 @@ namespace Beamable.Server.Clients
                 return "Service";
             }
         }
+        
+        /// <summary>
+        /// Call the GetOtherPlayerStats method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.GetOtherPlayerStats"/>
+        /// </summary>
+        public Beamable.Common.Promise<System.Collections.Generic.Dictionary<string, string>> GetOtherPlayerStats(long playerId)
+        {
+            object raw_playerId = playerId;
+            System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
+            serializedFields.Add("playerId", raw_playerId);
+            return this.Request<System.Collections.Generic.Dictionary<string, string>>("Service", "GetOtherPlayerStats", serializedFields);
+        }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
+        
+        [System.SerializableAttribute()]
+        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
+        {
+        }
     }
     
     [BeamContextSystemAttribute()]
