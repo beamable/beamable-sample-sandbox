@@ -32,25 +32,18 @@ namespace Beamable.Server.Clients
         }
         
         /// <summary>
-        /// Call the GetOtherPlayerStats method on the Service microservice
-        /// <see cref="Beamable.Microservices.Service.GetOtherPlayerStats"/>
+        /// Call the GetComplexDictionary method on the Service microservice
+        /// <see cref="Beamable.Microservices.Service.GetComplexDictionary"/>
         /// </summary>
-        public Beamable.Common.Promise<System.Collections.Generic.Dictionary<string, string>> GetOtherPlayerStats(long playerId)
+        public Beamable.Common.Promise<Beamable.Common.ComplexDictionaryResult> GetComplexDictionary()
         {
-            object raw_playerId = playerId;
             System.Collections.Generic.Dictionary<string, object> serializedFields = new System.Collections.Generic.Dictionary<string, object>();
-            serializedFields.Add("playerId", raw_playerId);
-            return this.Request<System.Collections.Generic.Dictionary<string, string>>("Service", "GetOtherPlayerStats", serializedFields);
+            return this.Request<Beamable.Common.ComplexDictionaryResult>("Service", "GetComplexDictionary", serializedFields);
         }
     }
     
     internal sealed class MicroserviceParametersServiceClient
     {
-        
-        [System.SerializableAttribute()]
-        internal sealed class ParameterSystem_Int64 : MicroserviceClientDataWrapper<long>
-        {
-        }
     }
     
     [BeamContextSystemAttribute()]

@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Beamable.Common;
 using Beamable.Common.Api.Groups;
+using Beamable.Common.Content;
 using Beamable.Server;
+using UnityEngine;
 
 namespace Beamable.Microservices
 {
@@ -10,17 +13,37 @@ namespace Beamable.Microservices
     public class Service : Microservice
     {
         [ClientCallable]
-        public async Task<Dictionary<string, string>> GetOtherPlayerStats(long playerId)
-        {
-            var otherUser = AssumeUser(playerId, false);
-            string domain = "game";
-            string access = "private";
-            string type = "player";
-            string[] keys = null; // null means all stats
+        public async Task<ComplexDictionaryResult> GetComplexDictionary()
+        {            
+            Debug.Log("Service.GetComplexDictionary called");
 
-            var stats = await otherUser.Services.Stats.GetStats(domain, access, type, playerId, keys);
+            var fruitDict = new SerializableDictionary<string, int> { { "apple", 5 }, { "banana", 7 } };
+            var veggieDict = new SerializableDictionary<string, int> { { "carrot", 3 }, { "date", 4 } };
 
-            return stats;
+            Debug.Log($"FruitDict keys: {string.Join(",", fruitDict.Keys)}");
+            Debug.Log($"VeggieDict keys: {string.Join(",", veggieDict.Keys)}");
+            fruitDict.OnBeforeSerialize();
+            veggieDict.OnBeforeSerialize();
+            var result = new ComplexDictionaryResult
+            {
+                entries = new List<CategoryEntry>
+                {
+                    new CategoryEntry
+                    {
+                        category = "fruits",
+                        values = fruitDict
+                    },
+                    new CategoryEntry
+                    {
+                        category = "veggies",
+                        values = veggieDict
+                    }
+                }
+            };
+
+            Debug.Log("Service.GetComplexDictionary returning result");
+
+            return result;
         }
     }
 }
