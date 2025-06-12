@@ -14,34 +14,42 @@ namespace Beamable.Microservices
     {
         [ClientCallable]
         public async Task<ComplexDictionaryResult> GetComplexDictionary()
-        {            
-            Debug.Log("Service.GetComplexDictionary called");
+        {
+            var fruitValues = new List<EntryValue>
+            {
+                new EntryValue { key = "apple", value = 5 },
+                new EntryValue { key = "banana", value = 7 }
+            };
 
-            var fruitDict = new SerializableDictionary<string, int> { { "apple", 5 }, { "banana", 7 } };
-            var veggieDict = new SerializableDictionary<string, int> { { "carrot", 3 }, { "date", 4 } };
+            var veggieValues = new List<EntryValue>
+            {
+                new EntryValue { key = "carrot", value = 3 },
+                new EntryValue { key = "date", value = 4 }
+            };
 
-            Debug.Log($"FruitDict keys: {string.Join(",", fruitDict.Keys)}");
-            Debug.Log($"VeggieDict keys: {string.Join(",", veggieDict.Keys)}");
-            fruitDict.OnBeforeSerialize();
-            veggieDict.OnBeforeSerialize();
+            foreach (var kv in fruitValues)
+            {
+                Debug.Log($"Fruit - Key: {kv.key}, Value: {kv.value}");
+            }
+
+            foreach (var kv in veggieValues)
+            {
+                Debug.Log($"Veggie - Key: {kv.key}, Value: {kv.value}");
+            }
+
             var result = new ComplexDictionaryResult
             {
                 entries = new List<CategoryEntry>
                 {
-                    new CategoryEntry
-                    {
-                        category = "fruits",
-                        values = fruitDict
-                    },
-                    new CategoryEntry
-                    {
-                        category = "veggies",
-                        values = veggieDict
-                    }
+                    new CategoryEntry { category = "fruits", values = fruitValues },
+                    new CategoryEntry { category = "veggies", values = veggieValues }
                 }
             };
 
-            Debug.Log("Service.GetComplexDictionary returning result");
+            foreach (var entry in result.entries)
+            {
+                Debug.Log($"Category: {entry.category}, Entry count: {entry.values?.Count ?? 0}");
+            }
 
             return result;
         }

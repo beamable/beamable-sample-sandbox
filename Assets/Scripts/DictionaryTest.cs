@@ -14,10 +14,8 @@ namespace DefaultNamespace
 
         private async void Start()
         {
-            Debug.Log("Initializing BeamContext...");
             _beamContext = await BeamContext.Default.Instance;
 
-            Debug.Log("BeamContext initialized. Calling microservice...");
             await CallMicroservice();
         }
 
@@ -37,29 +35,12 @@ namespace DefaultNamespace
                 foreach (var entry in result.entries)
                 {
                     Debug.Log($"Category: {entry.category}");
-                    
-                    if (entry.values == null)
+                    foreach (var kv in entry.values)
                     {
-                        Debug.LogWarning("Entry values are null");
-                        continue;
-                    }
-                    
-                    entry.values.OnAfterDeserialize();
-
-                    try
-                    {
-                        int count = 0;
-                        foreach (var kv in entry.values)
-                        {
-                            Debug.Log($"[entry.values] Key #{count + 1}: {kv.Key}, Value: {kv.Value}");
-                            count++;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError($"Exception while iterating entry.values: {ex}");
+                        Debug.Log($"Key: {kv.key}, Value: {kv.value}");
                     }
                 }
+
             }
             catch (Exception e)
             {
